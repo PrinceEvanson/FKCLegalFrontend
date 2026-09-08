@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
 export default function SkeletonLoader() {
   return (
     <div className="animate-pulse max-w-7xl mx-auto px-4 py-12 space-y-6">
-      <div className="h-10 bg-fkcGold/20 rounded w-1/3"></div>
+      <div className="h-10 bg-fkcGold/25 rounded w-1/3"></div>
       <div className="space-y-3">
         <div className="h-4 bg-gray-800 rounded w-full"></div>
         <div className="h-4 bg-gray-800 rounded w-5/6"></div>

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 export default function AdminDashboard() {
   const [interactions, setInteractions] = useState([]);
 
   useEffect(() => {
-    // Simulated backend fetch for user interactions & signups
     setInteractions([
       { id: 1, name: "Evans Kiprop", email: "evans@example.com", service: "Corporate & Commercial Law", date: "2026-09-08" },
       { id: 2, name: "Global Investor Ltd", email: "contact@investor.com", service: "Real Estate & Property Law", date: "2026-09-08" },

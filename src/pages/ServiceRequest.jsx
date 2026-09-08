@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function ServiceRequest() {
     const { serviceName } = useParams();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name: '', email: '', phone: '', details: '' });
+    const [formData, setFormData] = useState({ name: "", email: "", phone: "", details: "" });
     const [submitted, setSubmitted] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Here you would normally send the payload to your backend API with JWT
         setSubmitted(true);
     };
 
