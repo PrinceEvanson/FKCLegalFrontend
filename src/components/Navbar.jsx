@@ -68,7 +68,7 @@ export default function Navbar() {
 
               <Link to="/knowledge-lab" className="hover:text-fkcGold transition">KNOWLEDGE LAB</Link>
               <Link to="/diplomat" className="hover:text-fkcGold transition">DIPLOMAT & EX-DIPLOMAT</Link>
-              <Link to="/about" className="hover:text-fkcGold transition">ABOUT</Link>
+              <Link to="/about-us" className="hover:text-fkcGold transition">ABOUT</Link>
               <Link to="/career" className="hover:text-fkcGold transition">CAREER</Link>
               <Link to="/contact" className="hover:text-fkcGold transition">CONTACT US</Link>
             </div>
@@ -120,7 +120,7 @@ export default function Navbar() {
           <div className="space-y-2 pt-2 border-t border-fkcGold/20 text-xs font-medium">
             <Link to="/knowledge-lab" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">KNOWLEDGE LAB</Link>
             <Link to="/diplomat" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">DIPLOMAT & EX-DIPLOMAT</Link>
-            <Link to="/about" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">ABOUT</Link>
+            <Link to="/about-us" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">ABOUT</Link>
             <Link to="/career" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">CAREER</Link>
             <Link to="/contact" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">CONTACT US</Link>
           </div>

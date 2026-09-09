@@ -43,9 +43,7 @@ export default function KnowledgeLab() {
         <div className="min-h-screen bg-fkcBlack text-white">
             <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center">
                 <div className="max-w-4xl mx-auto space-y-4">
-                    <span className="text-xs uppercase font-bold tracking-widest text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-fkcGold/20 inline-block">
-                        Resource Center
-                    </span>
+
                     <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
                         Knowledge Lab
                     </h1>
