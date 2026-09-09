@@ -21,67 +21,67 @@ export default function CorePracticeAreas() {
             title: "Commercial Property",
             description: "Comprehensive legal guidance on real estate transactions, leasing, and development.",
             icon: Building2,
-            path: "/services"
+            path: "/services/commercial-property"
         },
         {
             title: "Corporate Services",
             description: "Advising businesses on incorporation, governance, restructuring, and compliance.",
             icon: Briefcase,
-            path: "/services"
+            path: "/services/corporate-services"
         },
         {
             title: "Dispute Resolution",
             description: "Strategic litigation support and advocacy to protect commercial interests.",
             icon: Scale,
-            path: "/services"
+            path: "/services/dispute-resolution"
         },
         {
             title: "International Arbitration And Mediation",
             description: "Resolving cross-border disputes efficiently through alternative mechanisms.",
             icon: Gavel,
-            path: "/services"
+            path: "/services/international-arbitration-and-mediation"
         },
         {
             title: "Employment And Benefits",
             description: "Navigating labor laws, contracts, executive compensation, and workplace policies.",
             icon: Users,
-            path: "/services"
+            path: "/services/employment-and-benefits"
         },
         {
             title: "Intellectual Property",
             description: "Securing, managing, and defending trademarks, patents, and proprietary rights.",
             icon: Lightbulb,
-            path: "/services"
+            path: "/services/intellectual-property"
         },
         {
             title: "Finance",
             description: "Structuring complex financial transactions, debt restructuring, and banking compliance.",
             icon: Coins,
-            path: "/services"
+            path: "/services/finance"
         },
         {
             title: "Financial Services Regulation",
             description: "Guiding financial institutions through evolving regulatory frameworks and licensing.",
             icon: ShieldCheck,
-            path: "/services"
+            path: "/services/financial-services-regulation"
         },
         {
             title: "Tax",
             description: "Strategic tax planning, dispute resolution, and compliance across jurisdictions.",
             icon: FileText,
-            path: "/services"
+            path: "/services/tax"
         },
         {
             title: "Immigration",
             description: "Seamless work permits, residency applications, and global mobility advisory.",
             icon: Globe,
-            path: "/services"
+            path: "/services/immigration"
         },
         {
             title: "Shipping And Logistics",
             description: "Maritime law, transport regulations, and cross-border logistics compliance.",
             icon: Truck,
-            path: "/services"
+            path: "/services/shipping-and-logistics"
         }
     ];
 

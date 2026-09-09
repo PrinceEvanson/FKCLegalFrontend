@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChevronDown, Menu, X, PhoneCall, Sun, Moon } from "lucide-react";
 import fkcLogo from "../assets/FKCLegalLogo.png";
 
@@ -7,6 +7,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (darkMode) {
@@ -17,17 +18,17 @@ export default function Navbar() {
   }, [darkMode]);
 
   const servicesList = [
-    { name: "Commercial Property", path: "/services" },
-    { name: "Corporate Services", path: "/services" },
-    { name: "Dispute Resolution", path: "/services" },
-    { name: "International Arbitration And Mediation", path: "/services" },
-    { name: "Employment And Benefits", path: "/services" },
-    { name: "Intellectual Property", path: "/services" },
-    { name: "Finance", path: "/services" },
-    { name: "Financial Services Regulation", path: "/services" },
-    { name: "Tax", path: "/services" },
-    { name: "Immigration", path: "/services" },
-    { name: "Shipping And Logistics", path: "/services" },
+    { name: "Commercial Property", path: "/services/commercial-property" },
+    { name: "Corporate Services", path: "/services/corporate-services" },
+    { name: "Dispute Resolution", path: "/services/dispute-resolution" },
+    { name: "International Arbitration And Mediation", path: "/services/international-arbitration-and-mediation" },
+    { name: "Employment And Benefits", path: "/services/employment-and-benefits" },
+    { name: "Intellectual Property", path: "/services/intellectual-property" },
+    { name: "Finance", path: "/services/finance" },
+    { name: "Financial Services Regulation", path: "/services/financial-services-regulation" },
+    { name: "Tax", path: "/services/tax" },
+    { name: "Immigration", path: "/services/immigration" },
+    { name: "Shipping And Logistics", path: "/services/shipping-and-logistics" },
   ];
 
   return (
@@ -40,10 +41,13 @@ export default function Navbar() {
             </Link>
 
             <div className="hidden md:flex items-center space-x-6 text-xs font-medium">
-              <Link to="/" className="hover:text-fkcGold transition">WHO WE HELP</Link>
+              <Link to="/who-we-help" className="hover:text-fkcGold transition">WHO WE HELP</Link>
 
               <div className="relative" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
-                <button className="flex items-center gap-1 hover:text-fkcGold transition py-2">
+                <button
+                  onDoubleClick={() => navigate("/services")}
+                  className="flex items-center gap-1 hover:text-fkcGold transition py-2 cursor-pointer"
+                >
                   SERVICES <ChevronDown size={14} />
                 </button>
                 {dropdownOpen && (
@@ -91,9 +95,17 @@ export default function Navbar() {
 
       {isOpen && (
         <div className="md:hidden bg-fkcBlack border-b border-fkcGold/30 px-4 py-4 space-y-3 max-h-[75vh] overflow-y-auto">
-          <Link to="/" onClick={() => setIsOpen(false)} className="block text-xs font-medium text-gray-300 hover:text-fkcGold">WHO WE HELP</Link>
+          <Link to="/who-we-help" onClick={() => setIsOpen(false)} className="block text-xs font-medium text-gray-300 hover:text-fkcGold">WHO WE HELP</Link>
           <div className="space-y-2 pt-2 border-t border-fkcGold/20">
-            <span className="text-[10px] uppercase tracking-wider text-fkcGold font-bold">Services</span>
+            <span
+              onDoubleClick={() => {
+                setIsOpen(false);
+                navigate("/services");
+              }}
+              className="text-[10px] uppercase tracking-wider text-fkcGold font-bold cursor-pointer inline-block"
+            >
+              Services
+            </span>
             {servicesList.map((service, idx) => (
               <div key={idx} className="flex justify-between items-center py-1.5 pl-2">
                 <Link to={service.path} onClick={() => setIsOpen(false)} className="text-xs text-gray-300 hover:text-fkcGold pr-2">
