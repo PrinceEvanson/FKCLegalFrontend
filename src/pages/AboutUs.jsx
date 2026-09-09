@@ -106,9 +106,6 @@ export default function AboutUs() {
                     </div>
 
                     <div className="lg:col-span-7 space-y-6">
-                        <span className="text-xs uppercase font-bold tracking-widest text-fkcGold bg-fkcGold/10 px-3 py-1.5 rounded-full border border-fkcGold/20 inline-block">
-                            About Company
-                        </span>
                         <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
                             Who We Are & Our African Dream
                         </h2>
