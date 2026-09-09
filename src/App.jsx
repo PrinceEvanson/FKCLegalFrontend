@@ -13,6 +13,8 @@ import ServiceRequest from "./pages/ServiceRequest";
 import AdminDashboard from "./pages/AdminDashboard";
 import SkeletonLoader from "./components/SkeletonLoader";
 import ScrollToTop from "./components/ScrollToTop";
+import KnowledgeLab from "./pages/KnowledgeLab";
+import Academy from "./pages/Academy";
 
 export default function App() {
   return (
@@ -28,6 +30,8 @@ export default function App() {
           <Route path="/services" element={<ServicesIndex />} />
           <Route path="/services/:slug" element={<ServiceTemplate />} />
           <Route path="/services/:serviceName/request" element={<ServiceRequest />} />
+          <Route path="/knowledge-lab" element={<KnowledgeLab />} />
+          <Route path="/academy" element={<Academy />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/loading-demo" element={<SkeletonLoader />} />
         </Routes>

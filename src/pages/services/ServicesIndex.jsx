@@ -65,7 +65,7 @@ export default function ServicesIndex() {
                                 to={`/services/${slug}`}
                                 className="inline-flex items-center gap-2 text-fkcGold font-bold text-xs uppercase tracking-wider group-hover:text-white transition-colors"
                             >
-                                <span>Explore Practice Area</span>
+                                <span>Explore Service </span>
                                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
