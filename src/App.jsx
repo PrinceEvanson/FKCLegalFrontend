@@ -15,6 +15,7 @@ import SkeletonLoader from "./components/SkeletonLoader";
 import ScrollToTop from "./components/ScrollToTop";
 import KnowledgeLab from "./pages/KnowledgeLab";
 import Academy from "./pages/Academy";
+import Diplomat from "./pages/Diplomat";
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/services/:serviceName/request" element={<ServiceRequest />} />
           <Route path="/knowledge-lab" element={<KnowledgeLab />} />
           <Route path="/academy" element={<Academy />} />
+          <Route path="/diplomat" element={<Diplomat />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/loading-demo" element={<SkeletonLoader />} />
         </Routes>
