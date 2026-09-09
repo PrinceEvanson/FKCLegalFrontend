@@ -17,6 +17,8 @@ import KnowledgeLab from "./pages/KnowledgeLab";
 import Academy from "./pages/Academy";
 import Diplomat from "./pages/Diplomat";
 import AboutUs from "./pages/AboutUs";
+import CareerOpportunities from "./pages/CareerOpportunities";
+import ContactUs from "./pages/Contacts";
 
 export default function App() {
   return (
@@ -36,6 +38,9 @@ export default function App() {
           <Route path="/academy" element={<Academy />} />
           <Route path="/diplomat" element={<Diplomat />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/career" element={<CareerOpportunities />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/loading-demo" element={<SkeletonLoader />} />
         </Routes>
