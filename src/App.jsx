@@ -19,6 +19,9 @@ import Diplomat from "./pages/Diplomat";
 import AboutUs from "./pages/AboutUs";
 import CareerOpportunities from "./pages/CareerOpportunities";
 import ContactUs from "./pages/Contacts";
+import StrategicPillars from "./pages/StrategicPillars";
+import FkcLegalFoundation from "./pages/FkcLegalFoundation";
+import GlobalFootprint from "./pages/GlobalFootprint";
 
 export default function App() {
   return (
@@ -41,6 +44,9 @@ export default function App() {
           <Route path="/career" element={<CareerOpportunities />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/our-strategic-pillars" element={<StrategicPillars />} />
+          <Route path="/fkc-legal-foundation" element={<FkcLegalFoundation />} />
+          <Route path="/global-footprint" element={<GlobalFootprint />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/loading-demo" element={<SkeletonLoader />} />
         </Routes>
