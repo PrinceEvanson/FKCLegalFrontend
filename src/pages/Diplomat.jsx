@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Shield, CheckCircle2, Globe, FileText, Landmark, Users, ChevronDown, PhoneCall, Send } from "lucide-react";
+import diplomaticflagsImg from "../assets/diplomaticfags.png";
 
 export default function Diplomat() {
     const [openFaq, setOpenFaq] = useState(null);
@@ -81,8 +82,13 @@ export default function Diplomat() {
 
     return (
         <div className="min-h-screen bg-fkcBlack text-white">
-            <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center">
-                <div className="max-w-4xl mx-auto space-y-6">
+            <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center overflow-hidden">
+                <div
+                    className="absolute inset-0 bg-cover bg-center opacity-25 pointer-events-none"
+                    style={{ backgroundImage: `url(${diplomaticflagsImg})` }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-fkcBlack/80 via-fkcBlack/60 to-fkcBlack"></div>
+                <div className="max-w-4xl mx-auto space-y-6 relative z-10">
                     <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
                         Diplomat & Ex-Diplomat <br />
                         <span className="text-fkcGold">Legal Support</span>

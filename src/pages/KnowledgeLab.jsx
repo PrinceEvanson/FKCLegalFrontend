@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { GraduationCap, Award, ArrowRight, BookOpen } from "lucide-react";
+import knowledgeBooksImg from "../assets/knowlegdebooks.png";
 
 export default function KnowledgeLab() {
     const [selectedCategory, setSelectedCategory] = useState("ALL");
@@ -41,8 +42,13 @@ export default function KnowledgeLab() {
 
     return (
         <div className="min-h-screen bg-fkcBlack text-white">
-            <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center">
-                <div className="max-w-4xl mx-auto space-y-4">
+            <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center overflow-hidden">
+                <div
+                    className="absolute inset-0 bg-cover bg-center opacity-80 pointer-events-none"
+                    style={{ backgroundImage: `url(${knowledgeBooksImg})` }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-fkcBlack/80 via-fkcBlack/60 to-fkcBlack"></div>
+                <div className="max-w-4xl mx-auto space-y-4 relative z-10">
 
                     <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
                         Knowledge Lab
