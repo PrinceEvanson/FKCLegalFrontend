@@ -25,7 +25,7 @@ export default function ContactUs() {
         <div className="min-h-screen bg-fkcBlack text-white">
             <div className="relative min-h-[70vh] flex flex-col items-center justify-center py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center overflow-hidden">
                 <div
-                    className="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none"
+                    className="absolute inset-0 bg-cover bg-center opacity-90 pointer-events-none"
                     style={{ backgroundImage: `url(${ContactHero})` }}
                 ></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-fkcBlack/85 via-fkcBlack/70 to-fkcBlack"></div>

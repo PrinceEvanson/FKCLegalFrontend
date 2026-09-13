@@ -84,7 +84,7 @@ export default function Diplomat() {
         <div className="min-h-screen bg-fkcBlack text-white">
             <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center overflow-hidden">
                 <div
-                    className="absolute inset-0 bg-cover bg-center opacity-25 pointer-events-none"
+                    className="absolute inset-0 bg-cover bg-center opacity-90 pointer-events-none"
                     style={{ backgroundImage: `url(${diplomaticflagsImg})` }}
                 ></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-fkcBlack/80 via-fkcBlack/60 to-fkcBlack"></div>
