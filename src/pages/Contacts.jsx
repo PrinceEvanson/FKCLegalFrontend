@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Mail, MapPin, Phone, Send, CheckCircle2 } from "lucide-react";
+import ContactHero from "../assets/contact.png";
 
 export default function ContactUs() {
     const [formData, setFormData] = useState({
@@ -22,8 +23,12 @@ export default function ContactUs() {
 
     return (
         <div className="min-h-screen bg-fkcBlack text-white">
-            <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-cover bg-center pointer-events-none" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80')` }}></div>
+            <div className="relative min-h-[150vh] sm:py-40 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center overflow-hidden">
+                <div
+                    className="absolute inset-0 bg-cover bg-center opacity-100 pointer-events-none"
+                    style={{ backgroundImage: `url(${ContactHero})` }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-fkcBlack/85 via-fkcBlack/70 to-fkcBlack"></div>
                 <div className="max-w-4xl mx-auto space-y-4 relative z-10">
                     <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
                         Contact Us

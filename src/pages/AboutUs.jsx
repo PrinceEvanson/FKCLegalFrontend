@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Shield, Target, Compass, Award, CheckCircle2, ArrowRight, FolderGit2, Landmark, Scale, Gavel } from "lucide-react";
+import AboutHero from "../assets/aboutus.png";
 
 export default function AboutUs() {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -78,8 +79,13 @@ export default function AboutUs() {
 
     return (
         <div className="min-h-screen bg-fkcBlack text-white">
-            <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center">
-                <div className="max-w-4xl mx-auto space-y-4">
+            <div className="relative py-32 sm:py-40 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center overflow-hidden">
+                <div
+                    className="absolute inset-0 bg-cover bg-center opacity-100 pointer-events-none"
+                    style={{ backgroundImage: `url(${AboutHero})` }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-fkcBlack/85 via-fkcBlack/70 to-fkcBlack"></div>
+                <div className="max-w-4xl mx-auto space-y-4 relative z-10">
                     <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
                         About Us
                     </h1>

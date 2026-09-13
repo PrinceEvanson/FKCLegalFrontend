@@ -15,6 +15,7 @@ import {
     Truck,
     ArrowRight
 } from "lucide-react";
+import ServicesHero from "../../assets/serviceshero.png";
 
 export default function ServicesIndex() {
     const serviceIcons = {
@@ -33,8 +34,13 @@ export default function ServicesIndex() {
 
     return (
         <div className="min-h-screen bg-fkcBlack text-white">
-            <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center">
-                <div className="max-w-4xl mx-auto space-y-4">
+            <div className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center overflow-hidden">
+                <div
+                    className="absolute inset-0 bg-cover bg-center opacity-100 pointer-events-none"
+                    style={{ backgroundImage: `url(${ServicesHero})` }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-fkcBlack/85 via-fkcBlack/70 to-fkcBlack"></div>
+                <div className="max-w-4xl mx-auto space-y-4 relative z-10">
                     <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
                         At Your Service!
                     </h1>
