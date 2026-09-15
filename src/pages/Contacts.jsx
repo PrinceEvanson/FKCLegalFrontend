@@ -16,24 +16,43 @@ export default function ContactUs() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitted(true);
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/contact/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                setSubmitted(true);
+            } else {
+                const errorData = await response.json();
+                console.error("Submission failed:", errorData);
+                alert("Failed to send message. Please check your inputs.");
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            alert("Could not connect to the server. Make sure Django is running.");
+        }
     };
 
     return (
-        <div className="min-h-screen bg-fkcBlack text-white">
-            <div className="relative min-h-[70vh] flex flex-col items-center justify-center py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#121212] to-fkcBlack border-b border-fkcGold/20 text-center overflow-hidden">
+        <div className="min-h-screen bg-white dark:bg-fkcBlack text-gray-900 dark:text-white transition-colors duration-300">
+            <div className="relative min-h-[70vh] flex flex-col items-center justify-center py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-100 to-white dark:from-[#121212] dark:to-fkcBlack border-b border-gray-200 dark:border-fkcGold/20 text-center overflow-hidden">
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-90 pointer-events-none"
                     style={{ backgroundImage: `url(${ContactHero})` }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-fkcBlack/85 via-fkcBlack/70 to-fkcBlack"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-white/70 to-white dark:from-fkcBlack/85 dark:via-fkcBlack/70 dark:to-fkcBlack"></div>
                 <div className="max-w-4xl mx-auto space-y-4 relative z-15 w-full">
-                    <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                    <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white leading-tight">
                         Contact Us
                     </h1>
-                    <p className="text-fkcGold font-semibold text-base sm:text-lg tracking-wide uppercase">
+                    <p className="text-fkcDarkGold dark:text-fkcGold font-semibold text-base sm:text-lg tracking-wide uppercase">
                         FKC Legal & Company Advocates
                     </p>
                 </div>
@@ -41,34 +60,34 @@ export default function ContactUs() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-                    <div className="lg:col-span-5 space-y-8 bg-gradient-to-br from-[#121212] via-[#161616] to-[#1a1a1a] border border-fkcGold/20 rounded-3xl p-8 shadow-xl">
+                    <div className="lg:col-span-5 space-y-8 bg-gray-50 dark:bg-gradient-to-br dark:from-[#121212] dark:via-[#161616] dark:to-[#1a1a1a] border border-gray-200 dark:border-fkcGold/20 rounded-3xl p-8 shadow-xl">
                         <div className="space-y-4">
-                            <h2 className="text-3xl font-extrabold text-white tracking-tight">Get in Touch</h2>
-                            <p className="text-gray-300 text-sm leading-relaxed">
+                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Get in Touch</h2>
+                            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                                 Don’t let legal complexities hold you back. Let FKC Legal & Company Advocates guide you to success. Contact us to schedule a consultation or learn more about how we can help your business thrive in Africa.
                             </p>
                         </div>
 
-                        <div className="space-y-6 pt-4 border-t border-fkcGold/10">
+                        <div className="space-y-6 pt-4 border-t border-gray-200 dark:border-fkcGold/10">
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center text-fkcGold shrink-0">
+                                <div className="w-12 h-12 rounded-2xl bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center text-fkcDarkGold dark:text-fkcGold shrink-0">
                                     <Mail size={22} />
                                 </div>
                                 <div>
-                                    <h4 className="text-xs uppercase font-bold tracking-wider text-gray-400">Mail Us</h4>
-                                    <a href="mailto:jambo@fkclegal.com" className="text-white hover:text-fkcGold transition text-sm font-medium">
+                                    <h4 className="text-xs uppercase font-bold tracking-wider text-gray-500 dark:text-gray-400">Mail Us</h4>
+                                    <a href="mailto:jambo@fkclegal.com" className="text-gray-900 dark:text-white hover:text-fkcDarkGold dark:hover:text-fkcGold transition text-sm font-medium">
                                         jambo@fkclegal.com
                                     </a>
                                 </div>
                             </div>
 
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center text-fkcGold shrink-0">
+                                <div className="w-12 h-12 rounded-2xl bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center text-fkcDarkGold dark:text-fkcGold shrink-0">
                                     <MapPin size={22} />
                                 </div>
                                 <div>
-                                    <h4 className="text-xs uppercase font-bold tracking-wider text-gray-400">Address</h4>
-                                    <p className="text-white text-sm font-medium leading-relaxed mt-1">
+                                    <h4 className="text-xs uppercase font-bold tracking-wider text-gray-500 dark:text-gray-400">Address</h4>
+                                    <p className="text-gray-900 dark:text-white text-sm font-medium leading-relaxed mt-1">
                                         FKC Legal<br />
                                         3rd Floor, The Promenade<br />
                                         General Mathenge Drive<br />
@@ -78,12 +97,12 @@ export default function ContactUs() {
                             </div>
 
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center text-fkcGold shrink-0">
+                                <div className="w-12 h-12 rounded-2xl bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center text-fkcDarkGold dark:text-fkcGold shrink-0">
                                     <Phone size={22} />
                                 </div>
                                 <div>
-                                    <h4 className="text-xs uppercase font-bold tracking-wider text-gray-400">Office Phone</h4>
-                                    <a href="tel:+254705932352" className="text-white hover:text-fkcGold transition text-sm font-medium">
+                                    <h4 className="text-xs uppercase font-bold tracking-wider text-gray-500 dark:text-gray-400">Office Phone</h4>
+                                    <a href="tel:+254705932352" className="text-gray-900 dark:text-white hover:text-fkcDarkGold dark:hover:text-fkcGold transition text-sm font-medium">
                                         +254 (705) 932 352
                                     </a>
                                 </div>
@@ -91,14 +110,14 @@ export default function ContactUs() {
                         </div>
                     </div>
 
-                    <div className="lg:col-span-7 bg-gradient-to-br from-[#121212] via-[#161616] to-[#1a1a1a] border border-fkcGold/20 rounded-3xl p-8 sm:p-10 shadow-xl">
+                    <div className="lg:col-span-7 bg-gray-50 dark:bg-gradient-to-br dark:from-[#121212] dark:via-[#161616] dark:to-[#1a1a1a] border border-gray-200 dark:border-fkcGold/20 rounded-3xl p-8 sm:p-10 shadow-xl">
                         {submitted ? (
                             <div className="text-center py-16 space-y-4">
-                                <div className="w-16 h-16 rounded-full bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center mx-auto text-fkcGold">
+                                <div className="w-16 h-16 rounded-full bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center mx-auto text-fkcDarkGold dark:text-fkcGold">
                                     <CheckCircle2 size={32} />
                                 </div>
-                                <h3 className="text-2xl font-bold text-white">Message Sent Successfully</h3>
-                                <p className="text-gray-300 text-sm max-w-md mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Message Sent Successfully</h3>
+                                <p className="text-gray-600 dark:text-gray-300 text-sm max-w-md mx-auto">
                                     Thank you for reaching out. Our team will get back to you shortly.
                                 </p>
                                 <button
@@ -114,32 +133,32 @@ export default function ContactUs() {
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2 text-center sm:text-left">
-                                    <h2 className="text-3xl font-extrabold text-white tracking-tight">Send Us Message</h2>
-                                    <p className="text-fkcGold text-xs font-semibold uppercase tracking-wider">Ready to move? Just Start, Legally</p>
+                                    <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Send Us Message</h2>
+                                    <p className="text-fkcDarkGold dark:text-fkcGold text-xs font-semibold uppercase tracking-wider">Ready to move? Just Start, Legally</p>
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-gray-300">Name:</label>
+                                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Name:</label>
                                         <input
                                             type="text"
                                             name="name"
                                             required
                                             value={formData.name}
                                             onChange={handleChange}
-                                            className="w-full bg-[#1a1a1a] border border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-fkcGold transition"
+                                            className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
                                             placeholder="Your Name"
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-gray-300">Email:</label>
+                                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Email:</label>
                                         <input
                                             type="email"
                                             name="email"
                                             required
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className="w-full bg-[#1a1a1a] border border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-fkcGold transition"
+                                            className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
                                             placeholder="your.email@example.com"
                                         />
                                     </div>
@@ -147,39 +166,39 @@ export default function ContactUs() {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-gray-300">Your Number:</label>
+                                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Your Number:</label>
                                         <input
                                             type="text"
                                             name="number"
                                             value={formData.number}
                                             onChange={handleChange}
-                                            className="w-full bg-[#1a1a1a] border border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-fkcGold transition"
+                                            className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
                                             placeholder="+254..."
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-gray-300">Subject:</label>
+                                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Subject:</label>
                                         <input
                                             type="text"
                                             name="subject"
                                             required
                                             value={formData.subject}
                                             onChange={handleChange}
-                                            className="w-full bg-[#1a1a1a] border border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-fkcGold transition"
+                                            className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
                                             placeholder="Subject"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-medium text-gray-300">Message:</label>
+                                    <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Message:</label>
                                     <textarea
                                         name="message"
                                         rows="5"
                                         required
                                         value={formData.message}
                                         onChange={handleChange}
-                                        className="w-full bg-[#1a1a1a] border border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-fkcGold transition resize-none"
+                                        className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition resize-none"
                                         placeholder="How can we help you?"
                                     ></textarea>
                                 </div>
@@ -187,7 +206,7 @@ export default function ContactUs() {
                                 <div>
                                     <button
                                         type="submit"
-                                        className="inline-flex items-center justify-center gap-2 bg-[#E05A47] hover:bg-[#c94b38] text-white font-bold px-8 py-3.5 rounded-xl transition shadow-lg text-sm w-full sm:w-auto"
+                                        className="inline-flex items-center justify-center gap-2 bg-[#E05A47] hover:bg-[#c94b38] text-white font-bold px-8 py-3.5 rounded-xl transition shadow-lg text-sm w-full sm:w-auto cursor-pointer"
                                     >
                                         Send Your Message <Send size={16} />
                                     </button>

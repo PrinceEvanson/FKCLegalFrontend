@@ -7,7 +7,7 @@ import FoundationProgramsSection from "../components/FoundationProgramsSection";
 
 export default function Help() {
     return (
-        <div className="min-h-screen bg-fkcBlack text-white">
+        <div className="min-h-screen bg-white dark:bg-fkcBlack text-gray-900 dark:text-white transition-colors duration-300">
             <WhoWeHelpHeader />
             <WhoWeHelpCards />
             <FoundationProgramsSection />

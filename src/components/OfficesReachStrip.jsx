@@ -129,29 +129,29 @@ export default function OfficesReachStrip() {
     const activeSlide = slides[currentIndex];
 
     return (
-        <section className="bg-fkcBlack py-16 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto bg-gradient-to-br from-[#121212] via-[#161616] to-[#1a1a1a] border border-fkcGold/20 rounded-3xl p-6 sm:p-12 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <section className="bg-white dark:bg-fkcBlack py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+            <div className="max-w-7xl mx-auto bg-gray-50 dark:bg-gradient-to-br dark:from-[#121212] dark:via-[#161616] dark:to-[#1a1a1a] border border-gray-200 dark:border-fkcGold/20 rounded-3xl p-6 sm:p-12 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
 
                 <div className="lg:col-span-5 space-y-8 flex flex-col justify-between h-full">
                     <div>
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs uppercase tracking-[0.2em] text-fkcGold font-semibold">Offices & Reach Strip</span>
-                            <div className="flex items-center gap-1.5 text-xs font-medium text-gray-400 bg-black/40 px-3 py-1 rounded-full border border-fkcGold/10">
-                                <span className="text-fkcGold">{currentIndex + 1}</span> / <span>{slides.length}</span>
+                            <span className="text-xs uppercase tracking-[0.2em] text-fkcDarkGold dark:text-fkcGold font-semibold">Offices & Reach Strip</span>
+                            <div className="flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-black/40 px-3 py-1 rounded-full border border-gray-300 dark:border-fkcGold/10">
+                                <span className="text-fkcDarkGold dark:text-fkcGold">{currentIndex + 1}</span> / <span>{slides.length}</span>
                             </div>
                         </div>
-                        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">Our Regional Presence & Network</h2>
+                        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Our Regional Presence & Network</h2>
                     </div>
 
-                    <div className="bg-black/40 border border-fkcGold/20 rounded-2xl p-6 sm:p-8 space-y-4 min-h-[180px] flex flex-col justify-center backdrop-blur-sm relative overflow-hidden shadow-inner">
-                        <div className="absolute top-0 left-0 w-1 h-full bg-fkcGold"></div>
+                    <div className="bg-white dark:bg-black/40 border border-gray-200 dark:border-fkcGold/20 rounded-2xl p-6 sm:p-8 space-y-4 min-h-[180px] flex flex-col justify-center backdrop-blur-sm relative overflow-hidden shadow-inner">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-fkcDarkGold dark:bg-fkcGold"></div>
                         <div>
-                            <span className="inline-block px-3 py-1 rounded-full bg-fkcGold/10 text-fkcGold text-xs font-semibold tracking-wide uppercase mb-3 border border-fkcGold/20">
+                            <span className="inline-block px-3 py-1 rounded-full bg-fkcGold/10 text-fkcDarkGold dark:text-fkcGold text-xs font-semibold tracking-wide uppercase mb-3 border border-gray-200 dark:border-fkcGold/20">
                                 {activeSlide.subtitle}
                             </span>
-                            <h3 className="text-2xl font-bold text-white tracking-tight">{activeSlide.title}</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{activeSlide.title}</h3>
                         </div>
-                        <p className="text-sm text-gray-300 leading-relaxed">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                             {activeSlide.content}
                         </p>
                     </div>
@@ -162,7 +162,7 @@ export default function OfficesReachStrip() {
                                 <button
                                     key={idx}
                                     onClick={() => setCurrentIndex(idx)}
-                                    className={`h-1.5 rounded-full transition-all duration-300 ${currentIndex === idx ? "w-8 bg-fkcGold shadow-[0_0_8px_rgba(212,175,55,0.5)]" : "w-1.5 bg-gray-800 hover:bg-gray-600"}`}
+                                    className={`h-1.5 rounded-full transition-all duration-300 ${currentIndex === idx ? "w-8 bg-fkcDarkGold dark:bg-fkcGold shadow-[0_0_8px_rgba(212,175,55,0.5)]" : "w-1.5 bg-gray-300 dark:bg-gray-800 hover:bg-gray-400 dark:hover:bg-gray-600"}`}
                                     aria-label={s.title}
                                 />
                             ))}
@@ -171,14 +171,14 @@ export default function OfficesReachStrip() {
                         <div className="flex gap-2">
                             <button
                                 onClick={prevSlide}
-                                className="p-2.5 rounded-xl bg-black/60 border border-fkcGold/30 text-fkcGold hover:bg-fkcGold hover:text-fkcBlack transition-all shadow-sm"
+                                className="p-2.5 rounded-xl bg-gray-100 dark:bg-black/60 border border-gray-300 dark:border-fkcGold/30 text-fkcDarkGold dark:text-fkcGold hover:bg-fkcDarkGold hover:text-white dark:hover:bg-fkcGold dark:hover:text-fkcBlack transition-all shadow-sm cursor-pointer"
                                 aria-label="Previous Slide"
                             >
                                 <ChevronLeft size={18} />
                             </button>
                             <button
                                 onClick={nextSlide}
-                                className="p-2.5 rounded-xl bg-black/60 border border-fkcGold/30 text-fkcGold hover:bg-fkcGold hover:text-fkcBlack transition-all shadow-sm"
+                                className="p-2.5 rounded-xl bg-gray-100 dark:bg-black/60 border border-gray-300 dark:border-fkcGold/30 text-fkcDarkGold dark:text-fkcGold hover:bg-fkcDarkGold hover:text-white dark:hover:bg-fkcGold dark:hover:text-fkcBlack transition-all shadow-sm cursor-pointer"
                                 aria-label="Next Slide"
                             >
                                 <ChevronRight size={18} />
@@ -187,8 +187,8 @@ export default function OfficesReachStrip() {
                     </div>
                 </div>
 
-                <div className="lg:col-span-7 relative flex justify-center items-center bg-[#0a0a0a] border border-fkcGold/20 rounded-2xl overflow-hidden h-[460px] shadow-2xl">
-                    <div className="w-full h-full z-10 [&_.leaflet-layer]:invert [&_.leaflet-layer]:hue-rotate-180 [&_.leaflet-layer]:brightness-95 [&_.leaflet-layer]:contrast-125">
+                <div className="lg:col-span-7 relative flex justify-center items-center bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-fkcGold/20 rounded-2xl overflow-hidden h-[460px] shadow-2xl">
+                    <div className="w-full h-full z-10 dark:[&_.leaflet-layer]:invert dark:[&_.leaflet-layer]:hue-rotate-180 dark:[&_.leaflet-layer]:brightness-95 dark:[&_.leaflet-layer]:contrast-125">
                         <MapContainer
                             center={activeSlide.coords}
                             zoom={activeSlide.zoom}
@@ -218,9 +218,9 @@ export default function OfficesReachStrip() {
                         </MapContainer>
                     </div>
 
-                    <div className="absolute bottom-4 left-4 z-20 bg-black/80 border border-fkcGold/30 px-3.5 py-2 rounded-xl text-xs text-gray-300 backdrop-blur-md flex items-center gap-2.5 shadow-lg pointer-events-none">
-                        <span className="w-2.5 h-2.5 rounded-full bg-fkcGold animate-pulse"></span>
-                        <span>Displayed Region: <strong className="text-fkcGold font-semibold">{activeSlide.title}</strong></span>
+                    <div className="absolute bottom-4 left-4 z-20 bg-white/90 dark:bg-black/80 border border-gray-200 dark:border-fkcGold/30 px-3.5 py-2 rounded-xl text-xs text-gray-700 dark:text-gray-300 backdrop-blur-md flex items-center gap-2.5 shadow-lg pointer-events-none">
+                        <span className="w-2.5 h-2.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold animate-pulse"></span>
+                        <span>Displayed Region: <strong className="text-fkcDarkGold dark:text-fkcGold font-semibold">{activeSlide.title}</strong></span>
                     </div>
                 </div>
 

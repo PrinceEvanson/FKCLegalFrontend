@@ -68,20 +68,20 @@ export default function StatsSection() {
     }, [activeIndex]);
 
     return (
-        <div ref={ref} className="relative bg-[#121212] border-y border-fkcGold/20 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-            <div className="absolute inset-0 opacity-15 bg-cover bg-center" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=2000&q=80')` }}></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-fkcBlack via-fkcBlack/90 to-fkcBlack"></div>
+        <div ref={ref} className="relative bg-white dark:bg-[#121212] border-y border-gray-200 dark:border-fkcGold/20 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden transition-colors duration-300">
+            <div className="absolute inset-0 opacity-10 dark:opacity-15 bg-cover bg-center" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=2000&q=80')` }}></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white dark:from-fkcBlack dark:via-fkcBlack/90 dark:to-fkcBlack"></div>
 
             <div className="relative max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className="flex flex-col items-center justify-center p-6 space-y-3 border-b sm:border-b-0 sm:border-r border-fkcGold/20 last:border-r-0">
-                        <div className="text-fkcGold mb-1">
+                    <div key={idx} className="flex flex-col items-center justify-center p-6 space-y-3 border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-fkcGold/20 last:border-r-0">
+                        <div className="text-fkcDarkGold dark:text-fkcGold mb-1">
                             {stat.icon}
                         </div>
-                        <span className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+                        <span className="text-4xl sm:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight">
                             {counts[idx]}
                         </span>
-                        <span className="text-xs uppercase font-bold tracking-wider text-gray-400">{stat.label}</span>
+                        <span className="text-xs uppercase font-bold tracking-wider text-gray-600 dark:text-gray-400">{stat.label}</span>
                     </div>
                 ))}
             </div>

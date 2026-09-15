@@ -17,10 +17,10 @@ export default function ServiceTemplate() {
 
     if (!service) {
         return (
-            <div className="min-h-[70vh] bg-fkcBlack text-white flex flex-col items-center justify-center text-center px-4">
-                <h1 className="text-3xl font-bold text-fkcGold mb-4">Service Not Found</h1>
-                <p className="text-gray-400 text-sm mb-6">The requested legal practice area could not be located.</p>
-                <Link to="/services" className="px-6 py-2.5 rounded-full bg-fkcGold text-fkcBlack font-bold text-xs uppercase">
+            <div className="min-h-[70vh] bg-white dark:bg-fkcBlack text-gray-900 dark:text-white flex flex-col items-center justify-center text-center px-4 transition-colors duration-300">
+                <h1 className="text-3xl font-bold text-fkcDarkGold dark:text-fkcGold mb-4">Service Not Found</h1>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">The requested legal practice area could not be located.</p>
+                <Link to="/services" className="px-6 py-2.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase hover:bg-gray-900 dark:hover:bg-white transition cursor-pointer">
                     Back to Services
                 </Link>
             </div>
@@ -37,9 +37,9 @@ export default function ServiceTemplate() {
     };
 
     return (
-        <div className="min-h-screen bg-fkcBlack text-white">
+        <div className="min-h-screen bg-white dark:bg-fkcBlack text-gray-900 dark:text-white transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-                <Link to="/services" className="inline-flex items-center gap-2 text-fkcGold text-xs uppercase font-bold tracking-wider hover:text-white transition">
+                <Link to="/services" className="inline-flex items-center gap-2 text-fkcDarkGold dark:text-fkcGold text-xs uppercase font-bold tracking-wider hover:text-gray-900 dark:hover:text-white transition">
                     <ArrowLeft size={16} />
                     <span>Back to All Services</span>
                 </Link>
@@ -48,34 +48,34 @@ export default function ServiceTemplate() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
                 <div className="lg:col-span-7 space-y-8">
                     <div className="space-y-4">
-                        <span className="text-xs uppercase font-bold tracking-widest text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-fkcGold/20 inline-block">
+                        <span className="text-xs uppercase font-bold tracking-widest text-fkcDarkGold dark:text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-gray-200 dark:border-fkcGold/20 inline-block">
                             At Your Service
                         </span>
-                        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
                             {service.title}
                         </h1>
-                        <p className="text-fkcGold text-sm sm:text-base font-medium">
+                        <p className="text-fkcDarkGold dark:text-fkcGold text-sm sm:text-base font-medium">
                             {service.subtitle}
                         </p>
                     </div>
 
                     <div className="space-y-4">
-                        <h2 className="text-xl font-bold text-white tracking-tight">Overview</h2>
-                        <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Overview</h2>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
                             {service.description}
                         </p>
                     </div>
 
                     <div className="space-y-6 pt-2">
-                        <h3 className="text-lg font-bold text-white tracking-tight">Key Offerings & Scope</h3>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Key Offerings & Scope</h3>
                         <div className="space-y-4">
                             {service.offerings.map((offering, idx) => (
-                                <div key={idx} className="bg-[#121212] border border-fkcGold/20 rounded-xl p-5 space-y-2 shadow-md">
+                                <div key={idx} className="bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-fkcGold/20 rounded-xl p-5 space-y-2 shadow-md">
                                     <div className="flex items-start gap-3">
-                                        <CheckCircle2 size={18} className="text-fkcGold flex-shrink-0 mt-0.5" />
-                                        <h4 className="text-base font-bold text-white">{offering.title}</h4>
+                                        <CheckCircle2 size={18} className="text-fkcDarkGold dark:text-fkcGold flex-shrink-0 mt-0.5" />
+                                        <h4 className="text-base font-bold text-gray-900 dark:text-white">{offering.title}</h4>
                                     </div>
-                                    <p className="text-xs sm:text-sm text-gray-300 leading-relaxed pl-7">
+                                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed pl-7">
                                         {offering.description}
                                     </p>
                                 </div>
@@ -85,21 +85,21 @@ export default function ServiceTemplate() {
                 </div>
 
                 <div className="lg:col-span-5">
-                    <div className="bg-gradient-to-br from-[#121212] to-[#181818] border border-fkcGold/30 rounded-2xl p-6 sm:p-8 shadow-2xl sticky top-28 space-y-6">
-                        <div className="flex items-center gap-3 border-b border-fkcGold/20 pb-4">
-                            <div className="w-10 h-10 rounded-xl bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center text-fkcGold">
+                    <div className="bg-gray-50 dark:bg-gradient-to-br dark:from-[#121212] dark:to-[#181818] border border-gray-200 dark:border-fkcGold/30 rounded-2xl p-6 sm:p-8 shadow-2xl sticky top-28 space-y-6">
+                        <div className="flex items-center gap-3 border-b border-gray-200 dark:border-fkcGold/20 pb-4">
+                            <div className="w-10 h-10 rounded-xl bg-fkcGold/10 border border-gray-200 dark:border-fkcGold/20 flex items-center justify-center text-fkcDarkGold dark:text-fkcGold">
                                 <ShieldCheck size={22} />
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-white">Acquire Assistance</h3>
-                                <p className="text-xs text-fkcGold">{service.title}</p>
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Acquire Assistance</h3>
+                                <p className="text-xs text-fkcDarkGold dark:text-fkcGold">{service.title}</p>
                             </div>
                         </div>
 
                         {submitted ? (
-                            <div className="bg-fkcGold/10 border border-fkcGold/30 rounded-xl p-6 text-center space-y-3">
-                                <h4 className="text-base font-bold text-fkcGold">Request Received Successfully</h4>
-                                <p className="text-xs text-gray-300">
+                            <div className="bg-fkcGold/10 border border-gray-200 dark:border-fkcGold/30 rounded-xl p-6 text-center space-y-3">
+                                <h4 className="text-base font-bold text-fkcDarkGold dark:text-fkcGold">Request Received Successfully</h4>
+                                <p className="text-xs text-gray-600 dark:text-gray-300">
                                     Thank you, {formData.fullName}. Our legal team will review your request for {service.title} and reach out shortly.
                                 </p>
                                 <button
@@ -107,7 +107,7 @@ export default function ServiceTemplate() {
                                         setSubmitted(false);
                                         setFormData({ fullName: "", email: "", phone: "", message: "" });
                                     }}
-                                    className="mt-2 px-4 py-2 rounded-full bg-fkcGold text-fkcBlack font-bold text-xs uppercase"
+                                    className="mt-2 px-4 py-2 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase hover:bg-gray-900 dark:hover:bg-white transition cursor-pointer"
                                 >
                                     Submit Another Request
                                 </button>
@@ -115,7 +115,7 @@ export default function ServiceTemplate() {
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Full Name</label>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">Full Name</label>
                                     <input
                                         type="text"
                                         name="fullName"
@@ -123,12 +123,12 @@ export default function ServiceTemplate() {
                                         value={formData.fullName}
                                         onChange={handleChange}
                                         placeholder="Enter your full name"
-                                        className="w-full bg-[#1a1a1a] border border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-fkcGold"
+                                        className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
                                     />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Email Address</label>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">Email Address</label>
                                     <input
                                         type="email"
                                         name="email"
@@ -136,12 +136,12 @@ export default function ServiceTemplate() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         placeholder="name@example.com"
-                                        className="w-full bg-[#1a1a1a] border border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-fkcGold"
+                                        className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
                                     />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Phone Number</label>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">Phone Number</label>
                                     <input
                                         type="tel"
                                         name="phone"
@@ -149,12 +149,12 @@ export default function ServiceTemplate() {
                                         value={formData.phone}
                                         onChange={handleChange}
                                         placeholder="+254 700 000 000"
-                                        className="w-full bg-[#1a1a1a] border border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-fkcGold"
+                                        className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
                                     />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Case / Project Details</label>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">Case / Project Details</label>
                                     <textarea
                                         name="message"
                                         rows="3"
@@ -162,13 +162,13 @@ export default function ServiceTemplate() {
                                         value={formData.message}
                                         onChange={handleChange}
                                         placeholder="Briefly describe your requirements..."
-                                        className="w-full bg-[#1a1a1a] border border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-fkcGold resize-none"
+                                        className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition resize-none"
                                     ></textarea>
                                 </div>
 
                                 <button
                                     type="submit"
-                                    className="w-full py-3.5 rounded-full bg-fkcGold text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-white transition shadow-lg flex items-center justify-center gap-2"
+                                    className="w-full py-3.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
                                 >
                                     <span>Submit Request</span>
                                     <Send size={15} />

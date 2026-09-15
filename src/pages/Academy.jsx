@@ -1,5 +1,3 @@
-// src/pages/Academy.jsx
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { GraduationCap, ShieldCheck, CheckCircle2, ArrowLeft, CreditCard, Smartphone } from "lucide-react";
@@ -77,19 +75,19 @@ export default function Academy() {
     };
 
     return (
-        <div className="min-h-screen bg-fkcBlack text-white">
+        <div className="min-h-screen bg-white dark:bg-fkcBlack text-gray-900 dark:text-white transition-colors duration-300">
             <div className="relative py-12 px-4 sm:px-6 lg:px-8 text-center">
                 <div className="max-w-4xl mx-auto space-y-4">
-                    <div className="w-12 h-12 mx-auto rounded-xl bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center text-fkcGold">
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-fkcGold/10 border border-gray-200 dark:border-fkcGold/20 flex items-center justify-center text-fkcDarkGold dark:text-fkcGold">
                         <GraduationCap size={28} />
                     </div>
-                    <span className="text-xs uppercase font-bold tracking-widest text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-fkcGold/20 inline-block">
+                    <span className="text-xs uppercase font-bold tracking-widest text-fkcDarkGold dark:text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-gray-200 dark:border-fkcGold/20 inline-block">
                         Executive Education
                     </span>
-                    <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+                    <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">
                         FKC Legal Academy
                     </h1>
-                    <p className="text-fkcGold text-sm sm:text-base font-medium max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-fkcDarkGold dark:text-fkcGold text-sm sm:text-base font-medium max-w-2xl mx-auto leading-relaxed">
                         Empowering business leaders, founders, and professionals with practical legal training and compliance masterclasses.
                     </p>
                 </div>
@@ -97,76 +95,76 @@ export default function Academy() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
                 {selectedCourse && (
-                    <div className="mb-16 bg-gradient-to-br from-[#121212] via-[#171717] to-[#121212] border-2 border-fkcGold rounded-3xl p-8 sm:p-12 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    <div className="mb-16 bg-gray-50 dark:bg-gradient-to-br dark:from-[#121212] dark:via-[#171717] dark:to-[#121212] border-2 border-fkcDarkGold dark:border-fkcGold rounded-3xl p-8 sm:p-12 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-12">
                         <div className="lg:col-span-6 space-y-6">
                             <div className="flex justify-between items-center">
-                                <span className="text-xs uppercase font-bold tracking-widest text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-fkcGold/20">
+                                <span className="text-xs uppercase font-bold tracking-widest text-fkcDarkGold dark:text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-gray-200 dark:border-fkcGold/20">
                                     {selectedCourse.level}
                                 </span>
-                                <span className="text-sm font-semibold text-gray-300">{selectedCourse.duration}</span>
+                                <span className="text-sm font-semibold text-gray-500 dark:text-gray-300">{selectedCourse.duration}</span>
                             </div>
-                            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">{selectedCourse.title}</h2>
-                            <p className="text-gray-300 text-sm leading-relaxed">
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">{selectedCourse.title}</h2>
+                            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                                 {selectedCourse.description}
                             </p>
-                            <div className="bg-fkcBlack/60 border border-fkcGold/20 rounded-2xl p-6 space-y-4">
-                                <h4 className="text-sm font-bold text-fkcGold uppercase tracking-wider">Course Requirements & Prerequisites:</h4>
+                            <div className="bg-white dark:bg-fkcBlack/60 border border-gray-200 dark:border-fkcGold/20 rounded-2xl p-6 space-y-4 shadow-sm">
+                                <h4 className="text-sm font-bold text-fkcDarkGold dark:text-fkcGold uppercase tracking-wider">Course Requirements & Prerequisites:</h4>
                                 <ul className="space-y-2">
                                     {selectedCourse.requirements.map((req, idx) => (
-                                        <li key={idx} className="flex items-start gap-2 text-xs text-gray-300">
-                                            <CheckCircle2 size={16} className="text-fkcGold shrink-0 mt-0.5" />
+                                        <li key={idx} className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-300">
+                                            <CheckCircle2 size={16} className="text-fkcDarkGold dark:text-fkcGold shrink-0 mt-0.5" />
                                             <span>{req}</span>
                                         </li>
                                     ))}
                                 </ul>
-                                <div className="pt-4 border-t border-fkcGold/10 flex justify-between items-center">
-                                    <span className="text-xs text-gray-400 font-semibold">Tuition Fee</span>
-                                    <span className="text-lg font-extrabold text-fkcGold">{selectedCourse.price}</span>
+                                <div className="pt-4 border-t border-gray-200 dark:border-fkcGold/10 flex justify-between items-center">
+                                    <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold">Tuition Fee</span>
+                                    <span className="text-lg font-extrabold text-fkcDarkGold dark:text-fkcGold">{selectedCourse.price}</span>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setSelectedCourse(null)}
-                                className="text-xs text-gray-400 hover:text-fkcGold underline transition"
+                                className="text-xs text-gray-500 dark:text-gray-400 hover:text-fkcDarkGold dark:hover:text-fkcGold underline transition"
                             >
                                 ← Choose a different course
                             </button>
                         </div>
 
-                        <div className="lg:col-span-6 bg-fkcBlack border border-fkcGold/30 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+                        <div className="lg:col-span-6 bg-white dark:bg-fkcBlack border border-gray-200 dark:border-fkcGold/30 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-md">
                             {submitted ? (
                                 <div className="my-auto py-12 text-center space-y-4">
-                                    <div className="w-16 h-16 mx-auto rounded-full bg-fkcGold/20 border border-fkcGold flex items-center justify-center text-fkcGold">
+                                    <div className="w-16 h-16 mx-auto rounded-full bg-fkcGold/20 border border-fkcDarkGold dark:border-fkcGold flex items-center justify-center text-fkcDarkGold dark:text-fkcGold">
                                         <CheckCircle2 size={32} />
                                     </div>
-                                    <h3 className="text-2xl font-bold text-white">Enrollment Successful!</h3>
-                                    <p className="text-gray-300 text-xs max-w-sm mx-auto leading-relaxed">
-                                        Thank you, {formData.name}. We have received your enrollment request and payment details for <span className="text-fkcGold font-semibold">{selectedCourse.title}</span>. Check your email ({formData.email}) for onboarding instructions.
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Enrollment Successful!</h3>
+                                    <p className="text-gray-600 dark:text-gray-300 text-xs max-w-sm mx-auto leading-relaxed">
+                                        Thank you, {formData.name}. We have received your enrollment request and payment details for <span className="text-fkcDarkGold dark:text-fkcGold font-semibold">{selectedCourse.title}</span>. Check your email ({formData.email}) for onboarding instructions.
                                     </p>
                                     <button
                                         onClick={() => { setSubmitted(false); setSelectedCourse(null); }}
-                                        className="mt-4 px-6 py-2.5 rounded-full bg-fkcGold text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-white transition"
+                                        className="mt-4 px-6 py-2.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition"
                                     >
                                         Back to Academy
                                     </button>
                                 </div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-5">
-                                    <h3 className="text-lg font-bold text-white border-b border-fkcGold/20 pb-3">Complete Your Enrollment</h3>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-fkcGold/20 pb-3">Complete Your Enrollment</h3>
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Full Name</label>
+                                            <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-1">Full Name</label>
                                             <input
                                                 type="text"
                                                 required
                                                 placeholder="e.g., Alex Kiprop"
                                                 value={formData.name}
                                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                className="w-full bg-[#121212] border border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-fkcGold"
+                                                className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-300 dark:border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold"
                                             />
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Age</label>
+                                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-1">Age</label>
                                                 <input
                                                     type="number"
                                                     required
@@ -174,30 +172,30 @@ export default function Academy() {
                                                     placeholder="e.g., 28"
                                                     value={formData.age}
                                                     onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                                                    className="w-full bg-[#121212] border border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-fkcGold"
+                                                    className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-300 dark:border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold"
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Email Address</label>
+                                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-1">Email Address</label>
                                                 <input
                                                     type="email"
                                                     required
                                                     placeholder="alex@example.com"
                                                     value={formData.email}
                                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                    className="w-full bg-[#121212] border border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-fkcGold"
+                                                    className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-300 dark:border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold"
                                                 />
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-2">Select Payment Method</label>
+                                            <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-2">Select Payment Method</label>
                                             <div className="grid grid-cols-2 gap-3">
                                                 <button
                                                     type="button"
                                                     onClick={() => setPaymentMethod("mpesa")}
                                                     className={`py-3 px-4 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition ${paymentMethod === "mpesa"
-                                                        ? "bg-fkcGold text-fkcBlack border-fkcGold shadow-md"
-                                                        : "bg-[#121212] text-gray-300 border-fkcGold/30 hover:border-fkcGold"
+                                                        ? "bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack border-fkcDarkGold dark:border-fkcGold shadow-md"
+                                                        : "bg-gray-50 dark:bg-[#121212] text-gray-700 dark:text-gray-300 border-gray-300 dark:border-fkcGold/30 hover:border-fkcDarkGold dark:hover:border-fkcGold"
                                                         }`}
                                                 >
                                                     <Smartphone size={16} />
@@ -207,8 +205,8 @@ export default function Academy() {
                                                     type="button"
                                                     onClick={() => setPaymentMethod("card")}
                                                     className={`py-3 px-4 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition ${paymentMethod === "card"
-                                                        ? "bg-fkcGold text-fkcBlack border-fkcGold shadow-md"
-                                                        : "bg-[#121212] text-gray-300 border-fkcGold/30 hover:border-fkcGold"
+                                                        ? "bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack border-fkcDarkGold dark:border-fkcGold shadow-md"
+                                                        : "bg-gray-50 dark:bg-[#121212] text-gray-700 dark:text-gray-300 border-gray-300 dark:border-fkcGold/30 hover:border-fkcDarkGold dark:hover:border-fkcGold"
                                                         }`}
                                                 >
                                                     <CreditCard size={16} />
@@ -218,31 +216,31 @@ export default function Academy() {
                                         </div>
                                         {paymentMethod === "mpesa" ? (
                                             <div>
-                                                <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">M-Pesa Phone Number</label>
+                                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-1">M-Pesa Phone Number</label>
                                                 <input
                                                     type="tel"
                                                     required
                                                     placeholder="0712 345 678"
                                                     value={formData.phone}
                                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                                    className="w-full bg-[#121212] border border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-fkcGold"
+                                                    className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-300 dark:border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold"
                                                 />
                                             </div>
                                         ) : (
                                             <div>
-                                                <label className="block text-[11px] font-bold text-gray-300 uppercase tracking-wider mb-1">Card Details (Mock)</label>
+                                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-1">Card Details (Mock)</label>
                                                 <input
                                                     type="text"
                                                     required
                                                     placeholder="4000 1234 5678 9010"
-                                                    className="w-full bg-[#121212] border border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-fkcGold"
+                                                    className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-300 dark:border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold"
                                                 />
                                             </div>
                                         )}
                                     </div>
                                     <button
                                         type="submit"
-                                        className="w-full py-3.5 rounded-full bg-fkcGold text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-white transition shadow-xl"
+                                        className="w-full py-3.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-xl"
                                     >
                                         Proceed to Pay {selectedCourse.price}
                                     </button>
@@ -254,30 +252,30 @@ export default function Academy() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
                     {courses.map((course) => (
-                        <div key={course.id} className="bg-gradient-to-br from-[#121212] via-[#161616] to-[#1a1a1a] border border-fkcGold/20 rounded-2xl p-8 flex flex-col justify-between space-y-6 shadow-2xl hover:border-fkcGold transition">
+                        <div key={course.id} className="bg-gray-50 dark:bg-gradient-to-br dark:from-[#121212] dark:via-[#161616] dark:to-[#1a1a1a] border border-gray-200 dark:border-fkcGold/20 rounded-2xl p-8 flex flex-col justify-between space-y-6 shadow-2xl hover:border-fkcDarkGold dark:hover:border-fkcGold transition">
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-[10px] uppercase font-bold tracking-widest text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-fkcGold/20">
+                                    <span className="text-[10px] uppercase font-bold tracking-widest text-fkcDarkGold dark:text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-gray-200 dark:border-fkcGold/20">
                                         {course.level}
                                     </span>
                                     <div className="flex items-center gap-3">
-                                        <span className="text-xs font-semibold text-fkcGold">{course.price}</span>
-                                        <span className="text-xs font-semibold text-gray-400">{course.duration}</span>
+                                        <span className="text-xs font-semibold text-fkcDarkGold dark:text-fkcGold">{course.price}</span>
+                                        <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">{course.duration}</span>
                                     </div>
                                 </div>
-                                <h3 className="text-xl font-bold text-white">{course.title}</h3>
-                                <p className="text-gray-300 text-sm leading-relaxed">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{course.title}</h3>
+                                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                                     {course.description}
                                 </p>
                             </div>
-                            <div className="pt-4 border-t border-fkcGold/10 flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-xs text-gray-400">
-                                    <ShieldCheck size={16} className="text-fkcGold" />
+                            <div className="pt-4 border-t border-gray-200 dark:border-fkcGold/10 flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                    <ShieldCheck size={16} className="text-fkcDarkGold dark:text-fkcGold" />
                                     <span>Certified Program</span>
                                 </div>
                                 <button
                                     onClick={() => handleEnrollClick(course)}
-                                    className="px-5 py-2.5 rounded-full bg-fkcGold text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-white transition shadow-lg cursor-pointer"
+                                    className="px-5 py-2.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-lg cursor-pointer"
                                 >
                                     Enroll Now
                                 </button>
@@ -286,15 +284,15 @@ export default function Academy() {
                     ))}
                 </div>
 
-                <div className="bg-gradient-to-br from-[#121212] to-[#181818] border border-fkcGold/30 rounded-2xl p-8 sm:p-12 text-center space-y-6 shadow-2xl">
-                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Custom Corporate Training</h2>
-                    <p className="text-gray-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                <div className="bg-gray-50 dark:bg-gradient-to-br dark:from-[#121212] dark:to-[#181818] border border-gray-200 dark:border-fkcGold/30 rounded-2xl p-8 sm:p-12 text-center space-y-6 shadow-2xl">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">Custom Corporate Training</h2>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
                         Need tailored legal training workshops specifically designed for your executive board, legal department, or operational staff? We develop customized curricula to match your corporate risk profile.
                     </p>
                     <div>
                         <Link
                             to="/contact"
-                            className="inline-block px-8 py-3.5 rounded-full bg-fkcGold text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-white transition shadow-xl"
+                            className="inline-block px-8 py-3.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-xl"
                         >
                             Request Custom Training
                         </Link>

@@ -27,29 +27,29 @@ export default function FoundationProgramsSection() {
     ];
 
     return (
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-fkcBlack to-black border-t border-fkcGold/10">
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gradient-to-b dark:from-fkcBlack dark:to-black border-t border-gray-200 dark:border-fkcGold/10 transition-colors duration-300">
             <div className="max-w-5xl mx-auto space-y-16">
 
                 <div className="text-center space-y-4">
-                    <span className="text-xs uppercase font-bold tracking-widest text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-fkcGold/20 inline-block">
+                    <span className="text-xs uppercase font-bold tracking-widest text-fkcDarkGold dark:text-fkcGold bg-fkcGold/10 px-3 py-1 rounded-full border border-gray-200 dark:border-fkcGold/20 inline-block">
                         FKC LEGAL FOUNDATION (CSR)
                     </span>
-                    <p className="text-gray-300 text-sm sm:text-base max-w-2xl mx-auto">
-                        CSR isn't a checkbox for us—it's a <strong className="text-white">pillar</strong>. Through the Foundation we invest in dignity, youth opportunity, and community legal awareness.
+                    <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base max-w-2xl mx-auto">
+                        CSR isn't a checkbox for us—it's a <strong className="text-gray-900 dark:text-white">pillar</strong>. Through the Foundation we invest in dignity, youth opportunity, and community legal awareness.
                     </p>
                 </div>
 
-                <div className="space-y-6 bg-[#121212] border border-fkcGold/20 rounded-2xl p-8 shadow-xl">
-                    <h3 className="text-xl font-bold text-white tracking-tight border-b border-fkcGold/10 pb-4">
+                <div className="space-y-6 bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-fkcGold/20 rounded-2xl p-8 shadow-xl">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight border-b border-gray-200 dark:border-fkcGold/10 pb-4">
                         Our Programs
                     </h3>
                     <ul className="space-y-4">
                         {programs.map((prog, idx) => (
-                            <li key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between text-xs sm:text-sm border-b border-white/5 pb-3 last:border-0 last:pb-0">
-                                <span className="font-bold text-white mb-1 sm:mb-0">
-                                    • {prog.title}: <span className="font-normal text-gray-300">{prog.desc}</span>
+                            <li key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between text-xs sm:text-sm border-b border-gray-200 dark:border-white/5 pb-3 last:border-0 last:pb-0">
+                                <span className="font-bold text-gray-900 dark:text-white mb-1 sm:mb-0">
+                                    • {prog.title}: <span className="font-normal text-gray-600 dark:text-gray-300">{prog.desc}</span>
                                 </span>
-                                <span className="text-fkcGold font-medium whitespace-nowrap">
+                                <span className="text-fkcDarkGold dark:text-fkcGold font-medium whitespace-nowrap">
                                     {prog.impact}
                                 </span>
                             </li>
@@ -57,35 +57,35 @@ export default function FoundationProgramsSection() {
                     </ul>
                 </div>
 
-                <div className="text-center space-y-3 bg-fkcGold/5 border border-fkcGold/10 rounded-2xl p-6">
-                    <h4 className="text-sm uppercase font-bold text-fkcGold tracking-wider">Values</h4>
-                    <p className="text-xs sm:text-sm text-gray-300">
-                        We are client-focused, partnership-oriented, long-term, excellent—<strong className="text-white">and we just happen to be lawyers.</strong>
+                <div className="text-center space-y-3 bg-fkcGold/5 border border-gray-200 dark:border-fkcGold/10 rounded-2xl p-6">
+                    <h4 className="text-sm uppercase font-bold text-fkcDarkGold dark:text-fkcGold tracking-wider">Values</h4>
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                        We are client-focused, partnership-oriented, long-term, excellent—<strong className="text-gray-900 dark:text-white">and we just happen to be lawyers.</strong>
                     </p>
                 </div>
 
                 <div className="text-center space-y-6 pt-6">
-                    <h3 className="text-2xl font-bold text-white tracking-tight">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                         How partners can help
                     </h3>
-                    <p className="text-gray-300 text-sm max-w-xl mx-auto">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm max-w-xl mx-auto">
                         Sponsor a drive, co-host a clinic, or fund a legal-awareness series. Let's build dignity together.
                     </p>
-                    <p className="text-xs font-semibold text-fkcGold uppercase tracking-widest">
+                    <p className="text-xs font-semibold text-fkcDarkGold dark:text-fkcGold uppercase tracking-widest">
                         Ready to move? Just Start, Legally.
                     </p>
 
                     <div className="flex flex-wrap justify-center gap-4 pt-4">
                         <Link
                             to="/partner-form"
-                            className="px-6 py-3 rounded-full bg-fkcGold text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-white transition shadow-lg flex items-center gap-2"
+                            className="px-6 py-3 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-lg flex items-center gap-2"
                         >
                             <HeartHandshake size={16} />
                             <span>Partner with the Foundation</span>
                         </Link>
                         <Link
                             to="/community-project-form"
-                            className="px-6 py-3 rounded-full border border-fkcGold/40 text-fkcGold font-bold text-xs uppercase tracking-wider hover:bg-fkcGold/10 transition flex items-center gap-2"
+                            className="px-6 py-3 rounded-full border border-gray-300 dark:border-fkcGold/40 text-fkcDarkGold dark:text-fkcGold font-bold text-xs uppercase tracking-wider hover:bg-fkcGold/10 transition flex items-center gap-2"
                         >
                             <span>Propose a Community Project</span>
                             <ArrowRight size={14} />

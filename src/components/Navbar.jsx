@@ -6,14 +6,19 @@ import fkcLogo from "../assets/FKCLegalLogo.png";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
+
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("fkc_theme") !== "light";
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
+      localStorage.setItem("fkc_theme", "dark");
     } else {
       document.documentElement.classList.remove("dark");
+      localStorage.setItem("fkc_theme", "light");
     }
   }, [darkMode]);
 
@@ -33,7 +38,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-fkcBlack text-white border-b border-fkcGold/30 sticky top-0 z-50 transition-colors duration-300">
+      <nav className="bg-white dark:bg-fkcBlack text-gray-900 dark:text-white border-b border-gray-200 dark:border-fkcGold/30 sticky top-0 z-50 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <Link to="/" className="flex items-center gap-3">
@@ -51,10 +56,10 @@ export default function Navbar() {
                   SERVICES <ChevronDown size={14} />
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute top-full left-0 w-80 bg-fkcBlack border border-fkcGold/40 shadow-2xl py-2 rounded-md max-h-[440px] overflow-y-auto scrollbar-thin scrollbar-thumb-fkcGold/40">
+                  <div className="absolute top-full left-0 w-80 bg-white dark:bg-fkcBlack border border-gray-200 dark:border-fkcGold/40 shadow-2xl py-2 rounded-md max-h-[440px] overflow-y-auto">
                     {servicesList.map((service, idx) => (
-                      <div key={idx} className="px-4 py-3 hover:bg-fkcBlue/30 flex justify-between items-center group transition">
-                        <Link to={service.path} className="text-gray-300 group-hover:text-fkcGold text-xs pr-2">
+                      <div key={idx} className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-fkcBlue/30 flex justify-between items-center group transition">
+                        <Link to={service.path} className="text-gray-700 dark:text-gray-300 group-hover:text-fkcGold text-xs pr-2">
                           {service.name}
                         </Link>
                         <Link to={service.path} className="text-[10px] bg-fkcGold text-fkcBlack px-2 py-1 rounded font-bold hover:bg-white transition shadow whitespace-nowrap">
@@ -74,63 +79,17 @@ export default function Navbar() {
             </div>
 
             <div className="hidden lg:flex items-center space-x-3">
-              <button onClick={() => setDarkMode(!darkMode)} className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-fkcGold/40 text-fkcGold hover:bg-fkcGold/10 transition text-xs font-medium">
-                {darkMode ? <Sun size={14} /> : <Moon size={14} />}
-                <span>{darkMode ? "Light Mode" : "Dark Mode"}</span>
-              </button>
-            </div>
-
-            <div className="md:hidden flex items-center space-x-3">
-              <button onClick={() => setDarkMode(!darkMode)} className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-fkcGold/40 text-fkcGold text-[10px]">
-                {darkMode ? <Sun size={12} /> : <Moon size={12} />}
-                <span>{darkMode ? "Light" : "Dark"}</span>
-              </button>
-              <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none">
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-300 dark:border-fkcGold/40 text-gray-800 dark:text-fkcGold hover:bg-fkcGold/10 transition text-xs font-medium cursor-pointer"
+              >
+                {darkMode ? <Moon size={14} /> : <Sun size={14} />}
+                <span>{darkMode ? "Dark Mode" : "Light Mode"}</span>
               </button>
             </div>
           </div>
         </div>
       </nav>
-
-      {isOpen && (
-        <div className="md:hidden bg-fkcBlack border-b border-fkcGold/30 px-4 py-4 space-y-3 max-h-[75vh] overflow-y-auto">
-          <Link to="/who-we-help" onClick={() => setIsOpen(false)} className="block text-xs font-medium text-gray-300 hover:text-fkcGold">WHO WE HELP</Link>
-          <div className="space-y-2 pt-2 border-t border-fkcGold/20">
-            <span
-              onDoubleClick={() => {
-                setIsOpen(false);
-                navigate("/services");
-              }}
-              className="text-[10px] uppercase tracking-wider text-fkcGold font-bold cursor-pointer inline-block"
-            >
-              Services
-            </span>
-            {servicesList.map((service, idx) => (
-              <div key={idx} className="flex justify-between items-center py-1.5 pl-2">
-                <Link to={service.path} onClick={() => setIsOpen(false)} className="text-xs text-gray-300 hover:text-fkcGold pr-2">
-                  {service.name}
-                </Link>
-                <Link to={service.path} onClick={() => setIsOpen(false)} className="text-[10px] bg-fkcGold text-fkcBlack px-2 py-0.5 rounded font-bold whitespace-nowrap">
-                  Acquire Assistance
-                </Link>
-              </div>
-            ))}
-          </div>
-          <div className="space-y-2 pt-2 border-t border-fkcGold/20 text-xs font-medium">
-            <Link to="/knowledge-lab" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">KNOWLEDGE LAB</Link>
-            <Link to="/diplomat" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">DIPLOMAT & EX-DIPLOMAT</Link>
-            <Link to="/about-us" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">ABOUT</Link>
-            <Link to="/career" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">CAREER</Link>
-            <Link to="/contact" onClick={() => setIsOpen(false)} className="block py-1 text-gray-300 hover:text-fkcGold">CONTACT US</Link>
-          </div>
-        </div>
-      )}
-
-      <a href="tel:+254700000000" className="fixed bottom-6 right-6 z-50 bg-fkcGold text-fkcBlack px-4 py-3 rounded-full shadow-2xl hover:bg-white transition flex items-center gap-2 border-2 border-fkcBlack animate-bounce font-bold text-xs">
-        <PhoneCall size={18} />
-        <span>Contact Us</span>
-      </a>
     </>
   );
 }

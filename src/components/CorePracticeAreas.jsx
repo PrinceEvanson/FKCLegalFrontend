@@ -86,16 +86,16 @@ export default function CorePracticeAreas() {
     ];
 
     return (
-        <section className="bg-fkcBlack py-20 px-4 sm:px-6 lg:px-8 border-t border-fkcGold/10">
+        <section className="bg-white dark:bg-fkcBlack py-20 px-4 sm:px-6 lg:px-8 border-t border-gray-200 dark:border-fkcGold/10 transition-colors duration-300">
             <div className="max-w-7xl mx-auto space-y-12">
                 <div className="text-center max-w-3xl mx-auto space-y-4">
-                    <div className="inline-block px-3.5 py-1.5 rounded-full bg-fkcGold/10 border border-fkcGold/20 text-fkcGold text-xs font-semibold tracking-widest uppercase">
+                    <div className="inline-block px-3.5 py-1.5 rounded-full bg-fkcGold/10 border border-gray-200 dark:border-fkcGold/20 text-fkcDarkGold dark:text-fkcGold text-xs font-semibold tracking-widest uppercase">
                         Expertise
                     </div>
-                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
+                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">
                         Core Practice Areas
                     </h2>
-                    <p className="text-gray-300 text-sm sm:text-base">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
                         Delivering specialized legal solutions tailored to drive your enterprise forward across complex regulatory landscapes.
                     </p>
                 </div>
@@ -107,20 +107,20 @@ export default function CorePracticeAreas() {
                             <Link
                                 key={index}
                                 to={practice.path}
-                                className="bg-gradient-to-br from-[#121212] via-[#161616] to-[#1a1a1a] border border-fkcGold/20 rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-fkcGold hover:shadow-[0_10px_30px_rgba(212,175,55,0.15)] group"
+                                className="bg-gray-50 dark:bg-gradient-to-br dark:from-[#121212] dark:via-[#161616] dark:to-[#1a1a1a] border border-gray-200 dark:border-fkcGold/20 rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-fkcDarkGold dark:hover:border-fkcGold hover:shadow-[0_10px_30px_rgba(212,175,55,0.15)] group"
                             >
                                 <div className="space-y-4">
-                                    <div className="w-12 h-12 rounded-xl bg-fkcGold/10 border border-fkcGold/20 flex items-center justify-center text-fkcGold group-hover:bg-fkcGold group-hover:text-fkcBlack transition-colors duration-300">
+                                    <div className="w-12 h-12 rounded-xl bg-fkcGold/10 border border-gray-200 dark:border-fkcGold/20 flex items-center justify-center text-fkcDarkGold dark:text-fkcGold group-hover:bg-fkcDarkGold dark:group-hover:bg-fkcGold group-hover:text-white dark:group-hover:text-fkcBlack transition-colors duration-300">
                                         <IconComponent size={24} />
                                     </div>
-                                    <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-fkcGold transition-colors">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-fkcDarkGold dark:group-hover:text-fkcGold transition-colors">
                                         {practice.title}
                                     </h3>
-                                    <p className="text-sm text-gray-300 leading-relaxed">
+                                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                         {practice.description}
                                     </p>
                                 </div>
-                                <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-fkcGold">
+                                <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-fkcDarkGold dark:text-fkcGold">
                                     <span>Explore Service</span>
                                     <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                 </div>

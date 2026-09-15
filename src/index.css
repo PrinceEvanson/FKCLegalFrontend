@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-fkcBlack: #0A0A0A;
   --color-fkcBlue: #1E3A8A;
@@ -9,4 +11,9 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+
+body {
+  @apply bg-white text-gray-900 dark:bg-fkcBlack dark:text-white transition-colors duration-300;
 }
