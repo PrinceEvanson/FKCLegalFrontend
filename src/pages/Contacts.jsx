@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Mail, MapPin, Phone, Send, CheckCircle2 } from "lucide-react";
 import ContactHero from "../assets/contact.png";
+import { servicesData } from "../data/servicesData";
 
 export default function ContactUs() {
+    const location = useLocation();
+    const prefilledService = location.state?.service || "";
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         number: "",
-        subject: "",
+        subject: prefilledService,
         message: ""
     });
     const [submitted, setSubmitted] = useState(false);
+
+    // Automatically sync subject if redirected from a service page
+    useEffect(() => {
+        if (location.state?.service) {
+            setFormData((prev) => ({ ...prev, subject: location.state.service }));
+        }
+    }, [location.state]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -166,7 +178,7 @@ export default function ContactUs() {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Your Number:</label>
+                                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Phone Number:</label>
                                         <input
                                             type="text"
                                             name="number"
@@ -178,15 +190,21 @@ export default function ContactUs() {
                                     </div>
                                     <div className="space-y-1.5">
                                         <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Subject:</label>
-                                        <input
-                                            type="text"
+                                        <select
                                             name="subject"
                                             required
                                             value={formData.subject}
                                             onChange={handleChange}
                                             className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
-                                            placeholder="Subject"
-                                        />
+                                        >
+                                            <option value="" disabled>Select a service or subject</option>
+                                            {Object.values(servicesData).map((service, idx) => (
+                                                <option key={idx} value={service.title}>
+                                                    {service.title}
+                                                </option>
+                                            ))}
+                                            <option value="Other">Other</option>
+                                        </select>
                                     </div>
                                 </div>
 

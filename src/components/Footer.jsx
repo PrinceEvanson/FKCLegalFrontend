@@ -75,7 +75,7 @@ export default function Footer() {
 
             <div className="max-w-7xl mx-auto mt-8 border-t border-gray-200 dark:border-gray-800 pt-6 flex flex-col items-center justify-center text-xs text-gray-500 dark:text-gray-400 space-y-2 text-center">
                 <p>© 2026 FKC Legal. All rights reserved.</p>
-                <p className="text-fkcDarkGold dark:text-fkcGold font-medium">Made by Prince Evanson</p>
+                <p className="text-fkcDarkGold dark:text-fkcGold font-medium">Powered by DEVORA</p>
             </div>
         </footer>
     );

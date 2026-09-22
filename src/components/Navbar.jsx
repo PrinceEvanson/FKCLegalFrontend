@@ -72,17 +72,16 @@ export default function Navbar() {
                     to="/services"
                     className="block px-4 py-2 text-xs font-bold uppercase tracking-wider text-fkcDarkGold dark:text-fkcGold hover:bg-gray-100 dark:hover:bg-fkcBlue/30 border-b border-gray-200 dark:border-fkcGold/20 mb-1 transition-colors duration-200"
                   >
-                    All Practice Areas
+                  Practice Areas
                   </Link>
                   {servicesList.map((service, idx) => (
-                    <div key={idx} className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-fkcBlue/30 flex justify-between items-center group transition-colors duration-200">
-                      <Link to={service.path} className="text-gray-700 dark:text-gray-300 group-hover:text-fkcGold text-xs pr-2 transition-colors duration-200">
-                        {service.name}
-                      </Link>
-                      <Link to={service.path} className="text-[10px] bg-fkcGold text-fkcBlack px-2 py-1 rounded font-bold hover:bg-white transition shadow whitespace-nowrap">
-                        Acquire Assistance
-                      </Link>
-                    </div>
+                    <Link
+                      key={idx}
+                      to={service.path}
+                      className="block px-4 py-3 text-xs text-gray-700 dark:text-gray-300 hover:text-fkcGold hover:bg-gray-100 dark:hover:bg-fkcBlue/30 transition-colors duration-200 border-b border-gray-100 dark:border-fkcGold/10 last:border-b-0"
+                    >
+                      {service.name}
+                    </Link>
                   ))}
                 </div>
               )}
@@ -131,7 +130,7 @@ export default function Navbar() {
               {mobileServicesOpen && (
                 <div className="pl-4 py-2 space-y-2 border-l-2 border-fkcGold/30 my-2">
                   <Link to="/services" className="block py-1.5 text-xs font-bold uppercase tracking-wider text-fkcGold transition-colors duration-200">
-                    All Practice Areas
+                    Practice Areas
                   </Link>
                   {servicesList.map((service, idx) => (
                     <Link key={idx} to={service.path} className="block py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-fkcGold transition-colors duration-200">
