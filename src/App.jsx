@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import Navbar from "./components/Navbar";
@@ -11,7 +11,8 @@ import CommunityProjectForm from "./pages/CommunityProjectForm";
 import ServicesIndex from "./pages/services/ServicesIndex";
 import ServiceTemplate from "./pages/services/ServiceTemplate";
 import ServiceRequest from "./pages/ServiceRequest";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./components/AdminLogin";
+import AdminDashboard from "./components/AdminDashboard";
 import SkeletonLoader from "./components/SkeletonLoader";
 import ScrollToTop from "./components/ScrollToTop";
 import KnowledgeLab from "./pages/KnowledgeLab";
@@ -24,35 +25,60 @@ import StrategicPillars from "./pages/StrategicPillars";
 import FkcLegalFoundation from "./pages/FkcLegalFoundation";
 import GlobalFootprint from "./pages/GlobalFootprint";
 
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem('access_token');
+  return token ? children : <Navigate to="/admin/login" replace />;
+}
+
+function AppLayout() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
+  return (
+    <>
+      {!isAdminRoute && <Navbar />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/who-we-help" element={<Help />} />
+        <Route path="/partner-form" element={<PartnerForm />} />
+        <Route path="/community-project-form" element={<CommunityProjectForm />} />
+        <Route path="/services" element={<ServicesIndex />} />
+        <Route path="/services/:slug" element={<ServiceTemplate />} />
+        <Route path="/services/:serviceName/request" element={<ServiceRequest />} />
+        <Route path="/knowledge-lab" element={<KnowledgeLab />} />
+        <Route path="/academy" element={<Academy />} />
+        <Route path="/diplomat" element={<Diplomat />} />
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/career" element={<CareerOpportunities />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/our-strategic-pillars" element={<StrategicPillars />} />
+        <Route path="/fkc-legal-foundation" element={<FkcLegalFoundation />} />
+        <Route path="/global-footprint" element={<GlobalFootprint />} />
+        <Route path="/loading-demo" element={<SkeletonLoader />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+      </Routes>
+      {!isAdminRoute && <Footer />}
+    </>
+  );
+}
+
 export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <Router>
           <ScrollToTop />
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/who-we-help" element={<Help />} />
-            <Route path="/partner-form" element={<PartnerForm />} />
-            <Route path="/community-project-form" element={<CommunityProjectForm />} />
-            <Route path="/services" element={<ServicesIndex />} />
-            <Route path="/services/:slug" element={<ServiceTemplate />} />
-            <Route path="/services/:serviceName/request" element={<ServiceRequest />} />
-            <Route path="/knowledge-lab" element={<KnowledgeLab />} />
-            <Route path="/academy" element={<Academy />} />
-            <Route path="/diplomat" element={<Diplomat />} />
-            <Route path="/about-us" element={<AboutUs />} />
-            <Route path="/career" element={<CareerOpportunities />} />
-            <Route path="/contact" element={<ContactUs />} />
-            <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/our-strategic-pillars" element={<StrategicPillars />} />
-            <Route path="/fkc-legal-foundation" element={<FkcLegalFoundation />} />
-            <Route path="/global-footprint" element={<GlobalFootprint />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/loading-demo" element={<SkeletonLoader />} />
-          </Routes>
-          <Footer />
+          <AppLayout />
         </Router>
       </AuthProvider>
     </ThemeProvider>

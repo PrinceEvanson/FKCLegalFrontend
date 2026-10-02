@@ -151,7 +151,7 @@ export default function ContactUs() {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">Name:</label>
+                                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300"> Client/Institute Name:</label>
                                         <input
                                             type="text"
                                             name="name"
@@ -159,7 +159,7 @@ export default function ContactUs() {
                                             value={formData.name}
                                             onChange={handleChange}
                                             className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
-                                            placeholder="Your Name"
+                                            placeholder="Name"
                                         />
                                     </div>
                                     <div className="space-y-1.5">
@@ -185,7 +185,7 @@ export default function ContactUs() {
                                             value={formData.number}
                                             onChange={handleChange}
                                             className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
-                                            placeholder="+254..."
+                                            placeholder="xxx-xxx-xxxx"
                                         />
                                     </div>
                                     <div className="space-y-1.5">

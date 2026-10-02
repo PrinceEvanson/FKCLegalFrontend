@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { GraduationCap, ShieldCheck, CheckCircle2, ArrowLeft, CreditCard, Smartphone } from "lucide-react";
+import { GraduationCap, ShieldCheck, CheckCircle2, Smartphone, CreditCard, Loader2 } from "lucide-react";
+import axios from "axios";
 
 export default function Academy() {
     const courses = [
@@ -48,7 +49,7 @@ export default function Academy() {
             title: "Cross-Border FDI & Market Entry Masterclass",
             duration: "4 Weeks",
             level: "Investors",
-            price: "Ksh 60,000",
+            price: "Ksh 60",
             description: "Comprehensive guidance on structuring investments, regulatory approvals, and land ownership rights in East Africa.",
             requirements: [
                 "Investors, entrepreneurs, or regional strategists",
@@ -63,15 +64,88 @@ export default function Academy() {
     const [formData, setFormData] = useState({ name: "", age: "", email: "", phone: "" });
     const [submitted, setSubmitted] = useState(false);
 
+    const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+
     const handleEnrollClick = (course) => {
         setSelectedCourse(course);
         setSubmitted(false);
+        setErrorMessage("");
         window.scrollTo({ top: 400, behavior: "smooth" });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitted(true);
+        setErrorMessage("");
+
+        if (paymentMethod === "mpesa") {
+            const cleanPhone = formData.phone.replace(/\s+/g, '');
+            const kenyanPhoneRegex = /^(?:(?:(?:\+?254)?(?:7|1))\d{8}|0(?:7|1)\d{8})$/;
+
+            if (!kenyanPhoneRegex.test(cleanPhone)) {
+                setErrorMessage("Please enter a valid Kenyan phone number (e.g., 0712345678 or +254712345678).");
+                return;
+            }
+        }
+
+        setLoading(true);
+        setLoadingMessage(
+            paymentMethod === "mpesa"
+                ? "Initiating M-Pesa STK Push... Check your phone."
+                : "Processing enrollment..."
+        );
+
+        try {
+            const payload = {
+                full_name: formData.name,
+                age: parseInt(formData.age, 10),
+                email: formData.email,
+                course_title: selectedCourse.title,
+                tuition_fee: selectedCourse.price,
+                payment_method: paymentMethod,
+                mpesa_phone_number: paymentMethod === "mpesa" ? formData.phone : ""
+            };
+
+            const response = await axios.post("http://localhost:8000/api/academy-enroll/", payload);
+
+            if (response.data.success) {
+                if (paymentMethod === "mpesa" && response.data.checkout_request_id) {
+                    const checkoutRequestId = response.data.checkout_request_id;
+                    setLoadingMessage("M-Pesa prompt sent! Waiting for your PIN authorization...");
+
+                    let isPolling = true;
+                    while (isPolling) {
+                        await new Promise((resolve) => setTimeout(resolve, 3000));
+                        try {
+                            const statusRes = await axios.get(`http://localhost:8000/api/mpesa/status/${checkoutRequestId}/`);
+                            const paymentStatus = statusRes.data.payment_status;
+
+                            if (paymentStatus === "Completed") {
+                                isPolling = false;
+                            } else if (paymentStatus === "Failed") {
+                                throw new Error("Payment failed or was cancelled.");
+                            }
+                        } catch (err) {
+                            if (err.message && err.message.includes("Payment failed")) {
+                                throw err;
+                            }
+                        }
+                    }
+                }
+                setSubmitted(true);
+            }
+        } catch (error) {
+            console.error("Enrollment error:", error);
+            setErrorMessage(
+                error.response?.data?.error ||
+                error.message ||
+                "Failed to process enrollment. Please check your connection and try again."
+            );
+        } finally {
+            setLoading(false);
+            setLoadingMessage("");
+        }
     };
 
     return (
@@ -124,13 +198,21 @@ export default function Academy() {
                             </div>
                             <button
                                 onClick={() => setSelectedCourse(null)}
-                                className="text-xs text-gray-500 dark:text-gray-400 hover:text-fkcDarkGold dark:hover:text-fkcGold underline transition"
+                                className="text-xs text-gray-500 dark:text-gray-400 hover:text-fkcDarkGold dark:hover:text-fkcGold underline transition cursor-pointer"
                             >
                                 ← Choose a different course
                             </button>
                         </div>
 
-                        <div className="lg:col-span-6 bg-white dark:bg-fkcBlack border border-gray-200 dark:border-fkcGold/30 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-md">
+                        <div className="lg:col-span-6 bg-white dark:bg-fkcBlack border border-gray-200 dark:border-fkcGold/30 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-md relative">
+                            {loading && (
+                                <div className="absolute inset-0 bg-white/95 dark:bg-fkcBlack/95 flex flex-col items-center justify-center z-50 rounded-2xl p-6 text-center backdrop-blur-sm">
+                                    <Loader2 className="animate-spin text-fkcDarkGold dark:text-fkcGold w-12 h-12 mb-4" />
+                                    <p className="text-gray-900 dark:text-white font-bold text-base">{loadingMessage}</p>
+                                    <p className="text-gray-500 dark:text-gray-400 text-xs mt-2">Please keep this window open while the transaction completes.</p>
+                                </div>
+                            )}
+
                             {submitted ? (
                                 <div className="my-auto py-12 text-center space-y-4">
                                     <div className="w-16 h-16 mx-auto rounded-full bg-fkcGold/20 border border-fkcDarkGold dark:border-fkcGold flex items-center justify-center text-fkcDarkGold dark:text-fkcGold">
@@ -138,11 +220,11 @@ export default function Academy() {
                                     </div>
                                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Enrollment Successful!</h3>
                                     <p className="text-gray-600 dark:text-gray-300 text-xs max-w-sm mx-auto leading-relaxed">
-                                        Thank you, {formData.name}. We have received your enrollment request and payment details for <span className="text-fkcDarkGold dark:text-fkcGold font-semibold">{selectedCourse.title}</span>. Check your email ({formData.email}) for onboarding instructions.
+                                        Thank you, {formData.name}. We have received your enrollment and payment details for <span className="text-fkcDarkGold dark:text-fkcGold font-semibold">{selectedCourse.title}</span>. Check your email ({formData.email}) for onboarding instructions.
                                     </p>
                                     <button
                                         onClick={() => { setSubmitted(false); setSelectedCourse(null); }}
-                                        className="mt-4 px-6 py-2.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition"
+                                        className="mt-4 px-6 py-2.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition cursor-pointer"
                                     >
                                         Back to Academy
                                     </button>
@@ -150,6 +232,13 @@ export default function Academy() {
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-5">
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-fkcGold/20 pb-3">Complete Your Enrollment</h3>
+
+                                    {errorMessage && (
+                                        <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/50 text-red-700 dark:text-red-300 rounded-xl text-xs">
+                                            {errorMessage}
+                                        </div>
+                                    )}
+
                                     <div className="space-y-4">
                                         <div>
                                             <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-1">Full Name</label>
@@ -193,7 +282,7 @@ export default function Academy() {
                                                 <button
                                                     type="button"
                                                     onClick={() => setPaymentMethod("mpesa")}
-                                                    className={`py-3 px-4 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition ${paymentMethod === "mpesa"
+                                                    className={`py-3 px-4 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer ${paymentMethod === "mpesa"
                                                         ? "bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack border-fkcDarkGold dark:border-fkcGold shadow-md"
                                                         : "bg-gray-50 dark:bg-[#121212] text-gray-700 dark:text-gray-300 border-gray-300 dark:border-fkcGold/30 hover:border-fkcDarkGold dark:hover:border-fkcGold"
                                                         }`}
@@ -204,7 +293,7 @@ export default function Academy() {
                                                 <button
                                                     type="button"
                                                     onClick={() => setPaymentMethod("card")}
-                                                    className={`py-3 px-4 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition ${paymentMethod === "card"
+                                                    className={`py-3 px-4 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer ${paymentMethod === "card"
                                                         ? "bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack border-fkcDarkGold dark:border-fkcGold shadow-md"
                                                         : "bg-gray-50 dark:bg-[#121212] text-gray-700 dark:text-gray-300 border-gray-300 dark:border-fkcGold/30 hover:border-fkcDarkGold dark:hover:border-fkcGold"
                                                         }`}
@@ -216,11 +305,11 @@ export default function Academy() {
                                         </div>
                                         {paymentMethod === "mpesa" ? (
                                             <div>
-                                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-1">M-Pesa Phone Number</label>
+                                                <label className="block text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-1">Phone Number </label>
                                                 <input
                                                     type="tel"
                                                     required
-                                                    placeholder="0712 345 678"
+                                                    placeholder="0712 345 678 or +254712345678"
                                                     value={formData.phone}
                                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                                     className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-300 dark:border-fkcGold/30 rounded-xl px-4 py-2.5 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold"
@@ -240,7 +329,8 @@ export default function Academy() {
                                     </div>
                                     <button
                                         type="submit"
-                                        className="w-full py-3.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-xl"
+                                        disabled={loading}
+                                        className="w-full py-3.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-xl disabled:opacity-50 cursor-pointer"
                                     >
                                         Proceed to Pay {selectedCourse.price}
                                     </button>

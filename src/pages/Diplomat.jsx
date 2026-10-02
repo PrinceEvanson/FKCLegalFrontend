@@ -2,15 +2,28 @@ import React, { useState } from "react";
 import { Shield, CheckCircle2, Globe, FileText, Landmark, Users, ChevronDown, PhoneCall, Send } from "lucide-react";
 import diplomaticflagsImg from "../assets/diplomaticfags.png";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
+const inputClass =
+    "w-full bg-white dark:bg-[#181818] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition";
+const labelClass = "block text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300";
+
+const EMPTY_FORM = {
+    clientName: "",
+    email: "",
+    number: "",
+    diplomaticStatus: "",
+    mission: "",
+    serviceCriteria: "",
+    message: ""
+};
+
 export default function Diplomat() {
     const [openFaq, setOpenFaq] = useState(null);
-    const [formData, setFormData] = useState({
-        clientName: "",
-        email: "",
-        serviceCriteria: "",
-        message: ""
-    });
+    const [formData, setFormData] = useState(EMPTY_FORM);
     const [submitted, setSubmitted] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
 
     const outcomes = [
         {
@@ -74,9 +87,43 @@ export default function Diplomat() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitted(true);
+        setSubmitting(true);
+        setError("");
+
+        // Field names here must match the DiplomatInquiry model on the backend.
+        const payload = {
+            name: formData.clientName.trim(),
+            email: formData.email.trim(),
+            number: formData.number.trim(),
+            diplomatic_status: formData.diplomaticStatus,
+            mission_or_country: formData.mission.trim(),
+            subject: formData.serviceCriteria,
+            message: formData.message.trim()
+        };
+
+        try {
+            const response = await fetch(`${API_URL}/api/diplomat/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                setSubmitted(true);
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                console.error("Diplomat request failed:", errorData);
+                const firstError = Object.values(errorData).flat()[0];
+                setError(typeof firstError === "string" ? firstError : "We could not send your request. Please check your details and try again.");
+            }
+        } catch (err) {
+            console.error("Network error:", err);
+            setError("Could not connect to the server. Please try again shortly.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -185,11 +232,20 @@ export default function Diplomat() {
                             <h3 className="text-fkcDarkGold dark:text-fkcGold font-bold text-lg">Request Received Successfully</h3>
                             <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">Thank you, {formData.clientName}. Our diplomatic advisory team will contact you shortly via your email
                                 ({formData.email}).</p>
+                            <button
+                                onClick={() => {
+                                    setSubmitted(false);
+                                    setFormData(EMPTY_FORM);
+                                }}
+                                className="mt-2 bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold px-6 py-2.5 rounded-full text-xs hover:bg-gray-900 dark:hover:bg-white transition shadow cursor-pointer"
+                            >
+                                Submit Another Request
+                            </button>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">Client Name</label>
+                                <label className={labelClass}>Client Name</label>
                                 <input
                                     type="text"
                                     name="clientName"
@@ -197,31 +253,72 @@ export default function Diplomat() {
                                     value={formData.clientName}
                                     onChange={handleChange}
                                     placeholder="Enter your full name or title"
-                                    className="w-full bg-white dark:bg-[#181818] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
+                                    className={inputClass}
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">Email Address</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    required
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="name@mission.org or personal email"
-                                    className="w-full bg-white dark:bg-[#181818] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
-                                />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className={labelClass}>Email Address</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        required
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        placeholder="name@mission.org or personal email"
+                                        className={inputClass}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className={labelClass}>Phone Number (optional)</label>
+                                    <input
+                                        type="text"
+                                        name="number"
+                                        value={formData.number}
+                                        onChange={handleChange}
+                                        placeholder="+254 7xx xxx xxx"
+                                        className={inputClass}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className={labelClass}>Diplomatic Status (optional)</label>
+                                    <select
+                                        name="diplomaticStatus"
+                                        value={formData.diplomaticStatus}
+                                        onChange={handleChange}
+                                        className={inputClass}
+                                    >
+                                        <option value="">Select status...</option>
+                                        <option value="Serving Diplomat">Serving Diplomat</option>
+                                        <option value="Former Diplomat">Former Diplomat</option>
+                                        <option value="Dependant">Dependant / Family Member</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className={labelClass}>Mission / Country (optional)</label>
+                                    <input
+                                        type="text"
+                                        name="mission"
+                                        value={formData.mission}
+                                        onChange={handleChange}
+                                        placeholder="e.g. Embassy of ..."
+                                        className={inputClass}
+                                    />
+                                </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">Criteria of Service</label>
+                                <label className={labelClass}>Criteria of Service</label>
                                 <select
                                     name="serviceCriteria"
                                     required
                                     value={formData.serviceCriteria}
                                     onChange={handleChange}
-                                    className="w-full bg-white dark:bg-[#181818] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
+                                    className={inputClass}
                                 >
                                     <option value="" disabled>Select diplomatic service...</option>
                                     {services.map((srv, idx) => (
@@ -233,7 +330,7 @@ export default function Diplomat() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">Details / Message</label>
+                                <label className={labelClass}>Details / Message</label>
                                 <textarea
                                     name="message"
                                     rows="4"
@@ -241,17 +338,22 @@ export default function Diplomat() {
                                     value={formData.message}
                                     onChange={handleChange}
                                     placeholder="Share details regarding your timeline, mission, or specific requirements..."
-                                    className="w-full bg-white dark:bg-[#181818] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition resize-none"
+                                    className={`${inputClass} resize-none`}
                                 ></textarea>
                             </div>
+
+                            {error && (
+                                <p className="text-sm text-red-600 dark:text-red-400 text-center">{error}</p>
+                            )}
 
                             <div className="text-center pt-2">
                                 <button
                                     type="submit"
-                                    className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-2xl cursor-pointer"
+                                    disabled={submitting}
+                                    className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-2xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     <Send size={16} />
-                                    <span>Submit Request</span>
+                                    <span>{submitting ? "Sending..." : "Submit Request"}</span>
                                 </button>
                             </div>
                         </form>
