@@ -24,7 +24,7 @@ export default function AdminFooter({ visible = true }) {
             }}
         >
             <div style={{ maxWidth: '1300px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px 20px', flexWrap: 'wrap' }}>
-                <img src={fkcLogo} alt="FKC Legal Logo" style={{ height: '30px', width: 'auto', objectFit: 'contain' }} />
+                <img src={fkcLogo} alt="FKC Legal Logo" style={{ height: '45px', width: 'auto', objectFit: 'contain' }} />
                 <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
                     © {new Date().getFullYear()} FKC Legal. All rights reserved.
                 </span>
