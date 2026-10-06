@@ -471,7 +471,7 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
                 {/* Situation updates: only available once the request has been read */}
                 {!locked && (
                     <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: `1px solid ${C.border}` }}>
-                        <div style={{ ...S.statLabel, fontSize: '0.75rem' }}>Situation Updates</div>
+                        <div style={{ ...S.statLabel, fontSize: '0.75rem' }}>Service Updates</div>
                         <div style={{ ...S.sub, marginBottom: '12px' }}>
                             {lastUpdate
                                 ? `Last update: ${fmtDateTime(lastUpdate.at)} by ${lastUpdate.author}`

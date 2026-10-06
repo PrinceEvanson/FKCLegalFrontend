@@ -185,7 +185,7 @@ export default function ContactUs() {
                                             value={formData.number}
                                             onChange={handleChange}
                                             className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition"
-                                            placeholder="xxx-xxx-xxxx"
+                                            placeholder="xxx-xxx-xxxx                              (Optional)"
                                         />
                                     </div>
                                     <div className="space-y-1.5">

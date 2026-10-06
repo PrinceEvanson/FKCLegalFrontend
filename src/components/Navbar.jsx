@@ -9,7 +9,7 @@ export default function Navbar() {
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("fkc_theme") !== "light";
+    return localStorage.getItem("fkc_theme") === "dark";
   });
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,7 +72,7 @@ export default function Navbar() {
                     to="/services"
                     className="block px-4 py-2 text-xs font-bold uppercase tracking-wider text-fkcDarkGold dark:text-fkcGold hover:bg-gray-100 dark:hover:bg-fkcBlue/30 border-b border-gray-200 dark:border-fkcGold/20 mb-1 transition-colors duration-200"
                   >
-                  Practice Areas
+                    Practice Areas
                   </Link>
                   {servicesList.map((service, idx) => (
                     <Link
@@ -152,3 +152,4 @@ export default function Navbar() {
     </nav>
   );
 }
+

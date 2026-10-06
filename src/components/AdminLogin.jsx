@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import fkcLogo from '../assets/FKCLegalLogo.png';
@@ -9,7 +9,51 @@ export default function AdminLogin() {
     const [error, setError] = useState('');
     const [attempts, setAttempts] = useState(0);
     const [isLocked, setIsLocked] = useState(false);
+    const [countdown, setCountdown] = useState(0);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const lockedUntil = localStorage.getItem('lockout_until');
+        if (lockedUntil) {
+            const now = Date.now();
+            const remaining = Math.ceil((parseInt(lockedUntil, 10) - now) / 1000);
+            if (remaining > 0) {
+                setIsLocked(true);
+                setCountdown(remaining);
+                setError(`Maximum login attempts reached. Please wait ${remaining}s.`);
+            } else {
+                localStorage.removeItem('lockout_until');
+                localStorage.removeItem('login_attempts');
+            }
+        }
+
+        const savedAttempts = localStorage.getItem('login_attempts');
+        if (savedAttempts) {
+            setAttempts(parseInt(savedAttempts, 10));
+        }
+    }, []);
+
+    useEffect(() => {
+        let timer;
+        if (isLocked && countdown > 0) {
+            timer = setInterval(() => {
+                setCountdown((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(timer);
+                        setIsLocked(false);
+                        setAttempts(0);
+                        setError('');
+                        localStorage.removeItem('lockout_until');
+                        localStorage.removeItem('login_attempts');
+                        return 0;
+                    }
+                    setError(`Maximum login attempts reached. Please wait ${prev - 1}s.`);
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [isLocked, countdown]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,16 +64,22 @@ export default function AdminLogin() {
                 username,
                 password
             });
+            localStorage.removeItem('lockout_until');
+            localStorage.removeItem('login_attempts');
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             navigate('/admin/dashboard');
         } catch (err) {
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
+            localStorage.setItem('login_attempts', newAttempts);
 
             if (newAttempts >= 4) {
+                const lockUntil = Date.now() + 60 * 1000;
+                localStorage.setItem('lockout_until', lockUntil.toString());
                 setIsLocked(true);
-                setError('Maximum login attempts reached. Form is locked.');
+                setCountdown(60);
+                setError('Maximum login attempts reached. Please wait 60s.');
             } else {
                 setError(`Invalid credentials. Attempt ${newAttempts} of 4.`);
             }
@@ -58,7 +108,7 @@ export default function AdminLogin() {
                 <img
                     src={fkcLogo}
                     alt="FKC Legal Logo"
-                    style={{ height: '60px', width: 'auto', objectFit: 'contain' }}
+                    style={{ height: '65px', width: 'auto', objectFit: 'contain' }}
                 />
             </div>
 
@@ -169,7 +219,7 @@ export default function AdminLogin() {
                         onMouseOver={(e) => { if (!isLocked) e.target.style.backgroundColor = '#9e7e45'; }}
                         onMouseOut={(e) => { if (!isLocked) e.target.style.backgroundColor = '#b29051'; }}
                     >
-                        {isLocked ? 'Locked Out' : 'Sign In'}
+                        {isLocked ? `Locked (${countdown}s)` : 'Sign In'}
                     </button>
                 </form>
             </div>
