@@ -14,7 +14,7 @@ export default function Footer() {
                     </div>
                     <div className="flex items-center gap-2.5 text-gray-600 dark:text-gray-300">
                         <Phone size={16} className="text-fkcDarkGold dark:text-fkcGold shrink-0" />
-                        <a href="tel:+254718620910" className="hover:text-fkcDarkGold dark:hover:text-fkcGold transition">+254 (718) 620 910</a>
+                        <a href="tel:+254705932352" className="hover:text-fkcDarkGold dark:hover:text-fkcGold transition">+254 (705) 932 352</a>
                     </div>
                     <div className="space-y-2 pt-1">
                         <a href="https://www.instagram.com/fkclegal/" target="_blank" rel="noreferrer" className="flex items-center gap-2.5 text-gray-600 dark:text-gray-300 hover:text-fkcDarkGold dark:hover:text-fkcGold transition group">
@@ -75,7 +75,7 @@ export default function Footer() {
 
             <div className="max-w-7xl mx-auto mt-8 border-t border-gray-200 dark:border-gray-800 pt-6 flex flex-col items-center justify-center text-xs text-gray-500 dark:text-gray-400 space-y-2 text-center">
                 <p>© 2026 FKC Legal. All rights reserved.</p>
-                <p className="text-fkcDarkGold dark:text-fkcGold font-medium">Powered by XDEVER</p>
+                <p className="text-fkcDarkGold dark:text-fkcGold font-medium">Powered by Reseau Technologies</p>
             </div>
         </footer>
     );
