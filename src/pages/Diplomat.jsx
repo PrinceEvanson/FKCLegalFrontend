@@ -277,7 +277,7 @@ export default function Diplomat() {
                                         name="number"
                                         value={formData.number}
                                         onChange={handleChange}
-                                        placeholder="+254 7xx xxx xxx"
+                                        placeholder="xxx xxx xxx "
                                         className={inputClass}
                                     />
                                 </div>
