@@ -633,7 +633,7 @@ export default function KnowledgeLab() {
                                         <span className="text-[10px] uppercase font-bold tracking-widest text-fkcDarkGold dark:text-fkcGold bg-fkcGold/10 px-2.5 py-1 rounded-full border border-gray-200 dark:border-fkcGold/20 inline-block mb-2">
                                             Legal Insights & Talks
                                         </span>
-                                        <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">FKC Legal Blog</h2>
+                                        <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Featured Blog Articles</h2>
                                     </div>
                                 </div>
 
