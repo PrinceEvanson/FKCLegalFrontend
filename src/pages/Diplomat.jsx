@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Shield, CheckCircle2, Globe, FileText, Landmark, Users, ChevronDown, PhoneCall, Send } from "lucide-react";
 import diplomaticflagsImg from "../assets/diplomaticfags.png";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-
+const API_URL = import.meta.env.VITE_API_URL || "https://fkclegalbackend.onrender.com";
 const inputClass =
     "w-full bg-white dark:bg-[#181818] border border-gray-300 dark:border-fkcGold/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-fkcDarkGold dark:focus:border-fkcGold transition";
 const labelClass = "block text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300";
