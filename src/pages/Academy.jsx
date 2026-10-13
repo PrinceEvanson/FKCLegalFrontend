@@ -107,7 +107,7 @@ export default function Academy() {
                 mpesa_phone_number: paymentMethod === "mpesa" ? formData.phone : ""
             };
 
-            const response = await axios.post("http://localhost:8000/api/academy-enroll/", payload);
+            const response = await axios.post(`${API_URL}/api/academy-enroll/`, payload);
 
             if (response.data.success) {
                 if (paymentMethod === "mpesa" && response.data.checkout_request_id) {
@@ -118,7 +118,7 @@ export default function Academy() {
                     while (isPolling) {
                         await new Promise((resolve) => setTimeout(resolve, 3000));
                         try {
-                            const statusRes = await axios.get(`http://localhost:8000/api/mpesa/status/${checkoutRequestId}/`);
+                            const statusRes = await axios.get(`${API_URL}/api/mpesa/status/${checkoutRequestId}/`);
                             const paymentStatus = statusRes.data.payment_status;
 
                             if (paymentStatus === "Completed") {

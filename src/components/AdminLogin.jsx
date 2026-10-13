@@ -60,10 +60,10 @@ export default function AdminLogin() {
         if (isLocked) return;
 
         try {
-            const response = await axios.post('http://localhost:8000/api/token/', {
-                username,
-                password
-            });
+    const response = await axios.post(`${API_URL}/api/token/`, {
+        username,
+        password
+    });
             localStorage.removeItem('lockout_until');
             localStorage.removeItem('login_attempts');
             localStorage.setItem('access_token', response.data.access);
