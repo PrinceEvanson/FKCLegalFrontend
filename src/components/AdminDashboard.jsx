@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Bell, Mail, MailOpen, X } from 'lucide-react';
 import AdminFooter from '../components/AdminFooter';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://fkclegalbackend.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || "https://fkclegalbackend.onrender.com";
 const MIN_PRICE = 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const DEFAULT_SERVICES = { contacts: 'General Contact Inquiry', diplomats: 'Diplomatic Inquiry' };
