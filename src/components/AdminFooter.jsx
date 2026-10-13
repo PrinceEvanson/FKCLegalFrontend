@@ -28,7 +28,7 @@ export default function AdminFooter({ visible = true }) {
                 <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>
                     © {new Date().getFullYear()} FKC Legal. All rights reserved.
                 </span>
-                <span style={{ color: '#b29051', fontSize: '0.75rem', fontWeight: '500' }}>Powered by XDEVER</span>
+                <span style={{ color: '#b29051', fontSize: '0.75rem', fontWeight: '500' }}>Powered by Reseau Technologies</span>
             </div>
         </footer>
     );

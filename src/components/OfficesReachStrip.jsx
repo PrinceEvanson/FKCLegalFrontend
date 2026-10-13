@@ -193,7 +193,11 @@ export default function OfficesReachStrip() {
                             center={activeSlide.coords}
                             zoom={activeSlide.zoom}
                             scrollWheelZoom={false}
-                            dragging={true}
+                            dragging={false}
+                            touchZoom={false}
+                            doubleClickZoom={false}
+                            boxZoom={false}
+                            keyboard={false}
                             zoomControl={false}
                             attributionControl={false}
                             className="w-full h-full"
