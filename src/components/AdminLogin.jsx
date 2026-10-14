@@ -240,7 +240,7 @@ export default function AdminLogin() {
                 boxSizing: 'border-box'
             }}>
                 <span>© {new Date().getFullYear()} FKC Legal. All rights reserved.</span>
-                <span style={{ color: '#b29051', fontWeight: '500' }}>Powered by XDEVER</span>
+                <span style={{ color: '#b29051', fontWeight: '500' }}>Powered by Reseau Technologies</span>
             </footer>
         </div>
     );

@@ -28,16 +28,17 @@ export default function ContactUs() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const API_URL = import.meta.env.VITE_API_URL || "https://fkclegalbackend.onrender.com";
     const handleSubmit = async (e) => {
         e.preventDefault();
-       try {
-    const response = await fetch(`${API_URL}/api/contact/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-    });
+        try {
+            const response = await fetch(`${API_URL}/api/contact/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
 
             if (response.ok) {
                 setSubmitted(true);
