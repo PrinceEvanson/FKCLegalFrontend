@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Bell, ChevronDown, Mail, MailOpen, Menu, X } from 'lucide-react';
+import { AlertCircle, Bell, CheckCircle2, ChevronDown, Mail, MailOpen, Menu, RefreshCw, X } from 'lucide-react';
 import AdminFooter from '../components/AdminFooter';
 
 const API_URL = import.meta.env.VITE_API_URL || "https://fkclegalbackend.onrender.com";
@@ -72,6 +72,15 @@ function useWindowWidth() {
 const RESPONSIVE_CSS = `
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+@keyframes spinIcon { to { transform: rotate(360deg); } }
+.spin-icon { animation: spinIcon 0.8s linear infinite; }
+
+@keyframes footerNoticeIn {
+  from { transform: translateY(120%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.footer-notice-box { animation: footerNoticeIn 0.3s ease-out both; }
 
 @media (max-width: 768px) {
   .page-pad { padding: 0 12px 90px 12px !important; }
@@ -600,6 +609,11 @@ export default function AdminDashboard() {
     const [placeholderIdx, setPlaceholderIdx] = useState(0);
     const [isPlaceholderVisible, setIsPlaceholderVisible] = useState(true);
 
+    // Traffic Logs refresh button: spinner state, last-refreshed time and the bottom confirmation bar.
+    const [refreshing, setRefreshing] = useState(false);
+    const [lastRefreshed, setLastRefreshed] = useState(null);
+    const [footerNotice, setFooterNotice] = useState(null);
+
     const width = useWindowWidth();
     const compact = width < NAV_BREAKPOINT;
     const [menuOpen, setMenuOpen] = useState(false);
@@ -608,10 +622,12 @@ export default function AdminDashboard() {
 
     const flash = (type, text) => setNotice({ type, text });
 
-    const fetchDashboardData = useCallback(async () => {
+    // Returns true on success. A manual refresh that fails keeps the dashboard on screen
+    // (the caller shows the error) instead of swapping in the full-page error view.
+    const fetchDashboardData = useCallback(async ({ manual = false } = {}) => {
         if (!localStorage.getItem('access_token')) {
             navigate('/admin/login');
-            return;
+            return false;
         }
         try {
             const res = await axios.get(`${API_URL}/api/admin/dashboard-data/`, authConfig());
@@ -627,14 +643,16 @@ export default function AdminDashboard() {
                 activity_logs: res.data.activity_logs || []
             });
             setLoadError('');
+            return true;
         } catch (err) {
             console.error(err);
             if (isAuthError(err)) {
                 clearSession();
                 navigate('/admin/login');
-            } else {
+            } else if (!manual) {
                 setLoadError('Could not load dashboard data. Check that the backend is running, then retry.');
             }
+            return false;
         } finally {
             setLoading(false);
         }
@@ -648,7 +666,7 @@ export default function AdminDashboard() {
     // Re-check the 24-hour "new arrival" window every minute, and pick up new requests every 2 minutes.
     useEffect(() => {
         const tick = setInterval(() => setNow(Date.now()), 60 * 1000);
-        const poll = setInterval(fetchDashboardData, 2 * 60 * 1000);
+        const poll = setInterval(() => fetchDashboardData(), 2 * 60 * 1000);
         return () => { clearInterval(tick); clearInterval(poll); };
     }, [fetchDashboardData]);
 
@@ -669,6 +687,12 @@ export default function AdminDashboard() {
         const t = setTimeout(() => setNotice(null), 4500);
         return () => clearTimeout(t);
     }, [notice]);
+
+    useEffect(() => {
+        if (!footerNotice) return undefined;
+        const t = setTimeout(() => setFooterNotice(null), 4000);
+        return () => clearTimeout(t);
+    }, [footerNotice]);
 
     useEffect(() => {
         if (!selected) return undefined;
@@ -703,6 +727,25 @@ export default function AdminDashboard() {
     const handleLogout = () => {
         clearSession();
         navigate('/admin/login');
+    };
+
+    // Spins the icon while the request runs (for at least ~0.7s so it is always noticeable),
+    // then confirms in the bottom bar.
+    const handleRefresh = async () => {
+        if (refreshing) return;
+        setRefreshing(true);
+        const startedAt = Date.now();
+        const ok = await fetchDashboardData({ manual: true });
+        const elapsed = Date.now() - startedAt;
+        if (elapsed < 700) await new Promise(resolve => setTimeout(resolve, 700 - elapsed));
+        setRefreshing(false);
+        if (ok) {
+            const time = new Date();
+            setLastRefreshed(time);
+            setFooterNotice({ type: 'success', text: `Logs refreshed at ${time.toLocaleTimeString()}` });
+        } else {
+            setFooterNotice({ type: 'error', text: 'Could not refresh the logs. Check your connection and try again.' });
+        }
     };
 
     const handleTabChange = (tab) => {
@@ -1145,7 +1188,17 @@ export default function AdminDashboard() {
                                     placeholder="Search by admin username, action, IP or date..."
                                     visible
                                 />
-                                <button style={S.goldBtn} onClick={fetchDashboardData}>Refresh</button>
+                                <button
+                                    onClick={handleRefresh}
+                                    disabled={refreshing}
+                                    style={{ ...S.goldBtn, ...S.iconBtn, justifyContent: 'center', opacity: refreshing ? 0.75 : 1, cursor: refreshing ? 'wait' : 'pointer' }}
+                                >
+                                    <RefreshCw size={15} className={refreshing ? 'spin-icon' : ''} />
+                                    {refreshing ? 'Refreshing...' : 'Refresh'}
+                                </button>
+                                {lastRefreshed && (
+                                    <span style={S.sub}>Last refreshed {lastRefreshed.toLocaleTimeString()}</span>
+                                )}
                             </div>
                         </div>
                         <DataTable
@@ -1175,6 +1228,39 @@ export default function AdminDashboard() {
             </div>
 
             <AdminFooter visible={navHidden} />
+
+            {/* Confirmation bar: pinned to the bottom of the screen at every width, independent of the navbar state. */}
+            {footerNotice && (
+                <div
+                    role="status"
+                    aria-live="polite"
+                    style={{
+                        position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 2100,
+                        display: 'flex', justifyContent: 'center', pointerEvents: 'none',
+                        padding: '0 12px calc(12px + env(safe-area-inset-bottom, 0px))'
+                    }}
+                >
+                    <div
+                        className="footer-notice-box"
+                        style={{
+                            pointerEvents: 'auto', width: '100%', maxWidth: '560px', boxSizing: 'border-box',
+                            display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '10px',
+                            background: noticeColor[footerNotice.type] || noticeColor.success, color: '#fff',
+                            fontSize: '0.9rem', fontWeight: '500', boxShadow: '0 -4px 20px rgba(0,0,0,0.45)'
+                        }}
+                    >
+                        {footerNotice.type === 'error' ? <AlertCircle size={20} style={{ flexShrink: 0 }} /> : <CheckCircle2 size={20} style={{ flexShrink: 0 }} />}
+                        <span style={{ flex: 1 }}>{footerNotice.text}</span>
+                        <button
+                            aria-label="Dismiss"
+                            onClick={() => setFooterNotice(null)}
+                            style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', padding: '2px', opacity: 0.85 }}
+                        >
+                            <X size={16} />
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {selectedItem && (
                 <InquiryModal
