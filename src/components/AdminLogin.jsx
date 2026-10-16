@@ -5,7 +5,7 @@ import fkcLogo from '../assets/FKCLegalLogo.png';
 
 const API_URL = import.meta.env.VITE_API_URL || "https://fkclegalbackend.onrender.com";
 
-// Clicking the logo this many times in a row (each click within the window) toggles the sign up form.
+
 const LOGO_CLICKS_REQUIRED = 4;
 const LOGO_CLICK_WINDOW = 1500;
 
@@ -31,6 +31,22 @@ const SIGNUP_FIELDS = [
     { key: 'code', label: 'Sign Up Code', type: 'password', placeholder: 'Enter the sign up code', autoComplete: 'off' }
 ];
 
+// Three dots that jump one after another, shown inside the buttons while a request is running.
+const DOTS_CSS = `
+@keyframes dot-jump {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-7px); }
+}
+.dots { display: inline-flex; align-items: center; gap: 5px; height: 18px; }
+.dots span { width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: dot-jump 1s infinite ease-in-out; }
+.dots span:nth-child(2) { animation-delay: 0.15s; }
+.dots span:nth-child(3) { animation-delay: 0.3s; }
+`;
+
+const DotsLoader = () => (
+    <span className="dots" role="status" aria-label="Loading"><span /><span /><span /></span>
+);
+
 export default function AdminLogin() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -39,6 +55,7 @@ export default function AdminLogin() {
     const [attempts, setAttempts] = useState(0);
     const [isLocked, setIsLocked] = useState(false);
     const [countdown, setCountdown] = useState(0);
+    const [loginLoading, setLoginLoading] = useState(false);
 
     const [showSignup, setShowSignup] = useState(false);
     const [signupForm, setSignupForm] = useState(EMPTY_SIGNUP);
@@ -113,8 +130,9 @@ export default function AdminLogin() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        if (isLocked) return;
+        if (isLocked || loginLoading) return;
         setSuccess('');
+        setLoginLoading(true);
 
         try {
             const response = await axios.post(`${API_URL}/api/token/`, {
@@ -140,6 +158,8 @@ export default function AdminLogin() {
             } else {
                 setError(`Invalid credentials. Attempt ${newAttempts} of 4.`);
             }
+        } finally {
+            setLoginLoading(false);
         }
     };
 
@@ -178,6 +198,8 @@ export default function AdminLogin() {
         }
     };
 
+    const loginBusy = isLocked || loginLoading;
+
     return (
         <div style={{
             minHeight: '100vh',
@@ -192,6 +214,8 @@ export default function AdminLogin() {
             padding: '110px 20px 90px 20px',
             boxSizing: 'border-box'
         }}>
+            <style>{DOTS_CSS}</style>
+
             <div style={{
                 position: 'absolute',
                 top: '30px',
@@ -217,11 +241,12 @@ export default function AdminLogin() {
             <div style={{
                 width: '100%',
                 maxWidth: '420px',
-                padding: '40px',
+                padding: 'clamp(24px, 6vw, 40px)',
                 backgroundColor: '#ffffff',
                 border: '1px solid #e5e7eb',
                 borderRadius: '12px',
-                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05)'
+                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
+                boxSizing: 'border-box'
             }}>
                 <div style={{ marginBottom: '28px', textAlign: 'center' }}>
                     <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#111827', margin: '0 0 8px 0' }}>
@@ -290,7 +315,11 @@ export default function AdminLogin() {
                             style={{
                                 width: '100%',
                                 padding: '12px',
-                                backgroundColor: signupLoading ? '#9ca3af' : '#b29051',
+                                minHeight: '44px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: signupLoading ? '#9e7e45' : '#b29051',
                                 color: '#ffffff',
                                 border: 'none',
                                 borderRadius: '6px',
@@ -300,10 +329,10 @@ export default function AdminLogin() {
                                 boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
                                 transition: 'background-color 0.2s'
                             }}
-                            onMouseOver={(e) => { if (!signupLoading) e.target.style.backgroundColor = '#9e7e45'; }}
-                            onMouseOut={(e) => { if (!signupLoading) e.target.style.backgroundColor = '#b29051'; }}
+                            onMouseOver={(e) => { if (!signupLoading) e.currentTarget.style.backgroundColor = '#9e7e45'; }}
+                            onMouseOut={(e) => { if (!signupLoading) e.currentTarget.style.backgroundColor = '#b29051'; }}
                         >
-                            {signupLoading ? 'Creating account...' : 'Create Account'}
+                            {signupLoading ? <DotsLoader /> : 'Create Account'}
                         </button>
 
                         <button
@@ -332,7 +361,7 @@ export default function AdminLogin() {
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                disabled={isLocked}
+                                disabled={loginBusy}
                                 required
                                 placeholder="Enter your username"
                                 style={{
@@ -342,7 +371,7 @@ export default function AdminLogin() {
                                     border: '1px solid #d1d5db',
                                     borderRadius: '6px',
                                     outline: 'none',
-                                    backgroundColor: isLocked ? '#f3f4f6' : '#fff',
+                                    backgroundColor: loginBusy ? '#f3f4f6' : '#fff',
                                     boxSizing: 'border-box',
                                     transition: 'border-color 0.2s'
                                 }}
@@ -359,7 +388,7 @@ export default function AdminLogin() {
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                disabled={isLocked}
+                                disabled={loginBusy}
                                 required
                                 placeholder="Enter your passcode"
                                 style={{
@@ -369,7 +398,7 @@ export default function AdminLogin() {
                                     border: '1px solid #d1d5db',
                                     borderRadius: '6px',
                                     outline: 'none',
-                                    backgroundColor: isLocked ? '#f3f4f6' : '#fff',
+                                    backgroundColor: loginBusy ? '#f3f4f6' : '#fff',
                                     boxSizing: 'border-box',
                                     transition: 'border-color 0.2s'
                                 }}
@@ -380,24 +409,28 @@ export default function AdminLogin() {
 
                         <button
                             type="submit"
-                            disabled={isLocked}
+                            disabled={loginBusy}
                             style={{
                                 width: '100%',
                                 padding: '12px',
-                                backgroundColor: isLocked ? '#9ca3af' : '#b29051',
+                                minHeight: '44px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: isLocked ? '#9ca3af' : loginLoading ? '#9e7e45' : '#b29051',
                                 color: '#ffffff',
                                 border: 'none',
                                 borderRadius: '6px',
                                 fontSize: '14px',
                                 fontWeight: '600',
-                                cursor: isLocked ? 'not-allowed' : 'pointer',
+                                cursor: loginBusy ? 'not-allowed' : 'pointer',
                                 boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
                                 transition: 'background-color 0.2s'
                             }}
-                            onMouseOver={(e) => { if (!isLocked) e.target.style.backgroundColor = '#9e7e45'; }}
-                            onMouseOut={(e) => { if (!isLocked) e.target.style.backgroundColor = '#b29051'; }}
+                            onMouseOver={(e) => { if (!loginBusy) e.currentTarget.style.backgroundColor = '#9e7e45'; }}
+                            onMouseOut={(e) => { if (!loginBusy) e.currentTarget.style.backgroundColor = '#b29051'; }}
                         >
-                            {isLocked ? `Locked (${countdown}s)` : 'Sign In'}
+                            {isLocked ? `Locked (${countdown}s)` : loginLoading ? <DotsLoader /> : 'Sign In'}
                         </button>
                     </form>
                 )}
@@ -410,9 +443,11 @@ export default function AdminLogin() {
                 right: 0,
                 backgroundColor: '#ffffff',
                 borderTop: '1px solid #e5e7eb',
-                padding: '16px 40px',
+                padding: '12px 20px',
                 display: 'flex',
-                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '6px 16px',
+                justifyContent: 'center',
                 alignItems: 'center',
                 fontSize: '0.75rem',
                 color: '#6b7280',

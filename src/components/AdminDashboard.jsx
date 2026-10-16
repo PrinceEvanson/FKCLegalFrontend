@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Mail, MailOpen, X } from 'lucide-react';
+import { Bell, ChevronDown, Mail, MailOpen, Menu, X } from 'lucide-react';
 import AdminFooter from '../components/AdminFooter';
 
 const API_URL = import.meta.env.VITE_API_URL || "https://fkclegalbackend.onrender.com";
@@ -54,6 +54,53 @@ const S = {
     sub: { fontSize: '0.8rem', color: C.faint },
     iconBtn: { display: 'inline-flex', alignItems: 'center', gap: '8px' }
 };
+
+// Below this width the nav links collapse into a dropdown.
+const NAV_BREAKPOINT = 1100;
+
+function useWindowWidth() {
+    const [w, setW] = useState(() => window.innerWidth);
+    useEffect(() => {
+        const onResize = () => setW(window.innerWidth);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+    return w;
+}
+
+// Inline styles can't do media queries, so the responsive rules live in one small stylesheet.
+const RESPONSIVE_CSS = `
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (max-width: 768px) {
+  .page-pad { padding: 0 12px 90px 12px !important; }
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; margin-bottom: 18px !important; }
+  .stat-card { padding: 14px !important; }
+  .stat-card h3 { font-size: 1.25rem !important; word-break: break-word; }
+  .toolbar { flex-direction: column !important; align-items: stretch !important; }
+  .toolbar input { width: 100% !important; }
+  .filters { width: 100%; }
+  .filters > div { flex: 1 1 100%; display: flex; align-items: center; gap: 8px; }
+  .filters select { flex: 1; }
+  .toast { left: 12px !important; right: 12px !important; max-width: none !important; }
+  .modal-box { padding: 18px !important; }
+  .modal-grid { grid-template-columns: 1fr !important; }
+
+  /* tables become stacked cards */
+  .rt-wrap { max-height: none !important; overflow: visible !important; background: transparent !important; border: none !important; }
+  .rt { min-width: 0 !important; display: block !important; }
+  .rt thead { display: none !important; }
+  .rt tbody { display: block !important; }
+  .rt tr { display: block !important; height: auto !important; background: #111827 !important; border: 1px solid #1f2937 !important; border-radius: 10px; margin-bottom: 14px; padding: 6px 0; }
+  .rt tr.rt-unread { background: #17160f !important; border-color: #b29051 !important; }
+  .rt td { display: flex !important; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 16px !important; text-align: right !important; border: none !important; box-shadow: none !important; }
+  .rt td::before { content: attr(data-label); color: #64748b; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: left; flex-shrink: 0; }
+  .rt td[data-label=""] { justify-content: flex-end; }
+  .rt td[data-label=""]::before { display: none; }
+  .rt td.rt-empty { justify-content: center !important; text-align: center !important; }
+}
+`;
 
 /* ---------- helpers ---------- */
 
@@ -126,7 +173,7 @@ const inquiryRevenue = (rows) => rows
 
 function StatCard({ label, value, gold }) {
     return (
-        <div style={S.card}>
+        <div className="stat-card" style={S.card}>
             <p style={S.statLabel}>{label}</p>
             <h3 style={{ color: gold ? C.gold : C.text, fontSize: '1.8rem', margin: 0 }}>{value}</h3>
         </div>
@@ -151,8 +198,8 @@ function SearchBox({ value, onChange, placeholder, visible }) {
 
 function DataTable({ headers, isEmpty, emptyText, children }) {
     return (
-        <div style={S.tableWrap}>
-            <table style={S.table}>
+        <div className="rt-wrap" style={S.tableWrap}>
+            <table className="rt" style={S.table}>
                 <thead>
                     <tr style={S.headRow}>
                         {headers.map((h, i) => <th key={i} style={S.th}>{h}</th>)}
@@ -162,7 +209,7 @@ function DataTable({ headers, isEmpty, emptyText, children }) {
                     {children}
                     {isEmpty && (
                         <tr>
-                            <td colSpan={headers.length} style={{ padding: '30px', textAlign: 'center', color: C.muted }}>{emptyText}</td>
+                            <td className="rt-empty" data-label="" colSpan={headers.length} style={{ padding: '30px', textAlign: 'center', color: C.muted }}>{emptyText}</td>
                         </tr>
                     )}
                 </tbody>
@@ -171,9 +218,9 @@ function DataTable({ headers, isEmpty, emptyText, children }) {
     );
 }
 
-function DateCell({ value }) {
+function DateCell({ value, label = 'Date' }) {
     return (
-        <td style={{ ...S.td, color: C.muted }}>
+        <td data-label={label} style={{ ...S.td, color: C.muted }}>
             <div>{fmtDate(value)}</div>
             <div style={S.sub}>{fmtTime(value)}</div>
         </td>
@@ -248,8 +295,8 @@ function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts
                 };
                 const lockInner = locked ? { pointerEvents: 'none' } : {};
                 return (
-                    <tr key={item.id} style={{ ...S.row, opacity: rowSaving ? 0.6 : 1, background: locked ? 'rgba(178,144,81,0.06)' : 'transparent' }}>
-                        <td style={{ ...S.td, fontWeight: '500', boxShadow: locked ? `inset 3px 0 0 ${C.gold}` : 'none' }}>
+                    <tr key={item.id} className={locked ? 'rt-unread' : ''} style={{ ...S.row, opacity: rowSaving ? 0.6 : 1, background: locked ? 'rgba(178,144,81,0.06)' : 'transparent' }}>
+                        <td data-label="Client" style={{ ...S.td, fontWeight: '500', boxShadow: locked ? `inset 3px 0 0 ${C.gold}` : 'none' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <span title={locked ? 'Unread' : 'Read'} style={{ display: 'inline-flex' }}>
                                     {locked ? <Mail size={16} color={C.gold} /> : <MailOpen size={16} color={C.faint} />}
@@ -263,15 +310,15 @@ function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts
                                 </div>
                             )}
                         </td>
-                        <td style={{ ...S.td, color: C.muted }}>
+                        <td data-label="Contact" style={{ ...S.td, color: C.muted }}>
                             <div>{item.email || 'No Email'}</div>
                             <div style={S.sub}>{item.phone || 'No Phone Number Registered'}</div>
                         </td>
-                        <td style={{ ...S.td, color: C.gold }}>
+                        <td data-label="Service" style={{ ...S.td, color: C.gold }}>
                             {item.service}
                             {extra && <div style={S.sub}>{extra}</div>}
                         </td>
-                        <td style={S.td}>
+                        <td data-label="Status" style={S.td}>
                             <div style={lockWrap} onClick={locked ? onLockedClick : undefined} title={locked ? 'Mark as read first' : undefined}>
                                 <select
                                     value={item.fulfillment_status}
@@ -286,7 +333,7 @@ function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts
                         </td>
                         {!isFoundation(kind) && (
                             <>
-                                <td style={S.td}>
+                                <td data-label="Payment" style={S.td}>
                                     <div style={lockWrap} onClick={locked ? onLockedClick : undefined} title={locked ? 'Mark as read first' : undefined}>
                                         <select
                                             value={item.payment_status}
@@ -299,7 +346,7 @@ function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts
                                         </select>
                                     </div>
                                 </td>
-                                <td style={S.td}>
+                                <td data-label="Price" style={S.td}>
                                     <div style={lockWrap} onClick={locked ? onLockedClick : undefined} title={locked ? 'Mark as read first' : undefined}>
                                         {!item.price_set ? (
                                             <div style={{ display: 'flex', gap: '6px', alignItems: 'center', ...lockInner }}>
@@ -328,7 +375,7 @@ function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts
                                 </td>
                             </>
                         )}
-                        <td style={{ ...S.td, textAlign: 'right' }}>
+                        <td data-label="" style={{ ...S.td, textAlign: 'right' }}>
                             <button onClick={() => onOpen(item.id)} style={S.goldBtn}>{openLabel}</button>
                         </td>
                     </tr>
@@ -366,6 +413,7 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
             style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' }}
         >
             <div
+                className="modal-box"
                 onClick={(e) => e.stopPropagation()}
                 style={{ background: C.panel, border: `1px solid ${C.border}`, borderRadius: '12px', width: '100%', maxWidth: '640px', maxHeight: '90vh', overflowY: 'auto', padding: '28px' }}
             >
@@ -414,7 +462,7 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
                     </button>
                 </div>
 
-                <div style={grid}>
+                <div className="modal-grid" style={grid}>
                     {cell('Client Name', item.name)}
                     {cell(kind === 'partners' ? 'Partnership Type' : kind === 'projects' ? 'Project Title' : 'Subject / Service', item.service)}
                     {cell('Email', item.email)}
@@ -434,7 +482,7 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
                     )}
                 </div>
 
-                <div style={grid}>
+                <div className="modal-grid" style={grid}>
                     {cell('Service Requested At', fmtDateTime(item.created_at))}
                     {cell('Fulfilled At', item.fulfilled_at ? fmtDateTime(item.fulfilled_at) : 'Not yet fulfilled')}
                 </div>
@@ -552,6 +600,10 @@ export default function AdminDashboard() {
     const [placeholderIdx, setPlaceholderIdx] = useState(0);
     const [isPlaceholderVisible, setIsPlaceholderVisible] = useState(true);
 
+    const width = useWindowWidth();
+    const compact = width < NAV_BREAKPOINT;
+    const [menuOpen, setMenuOpen] = useState(false);
+
     const navigate = useNavigate();
 
     const flash = (type, text) => setNotice({ type, text });
@@ -589,6 +641,9 @@ export default function AdminDashboard() {
     }, [navigate]);
 
     useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
+
+    // Close the dropdown whenever the layout switches back to the full navbar.
+    useEffect(() => { if (!compact) setMenuOpen(false); }, [compact]);
 
     // Re-check the 24-hour "new arrival" window every minute, and pick up new requests every 2 minutes.
     useEffect(() => {
@@ -655,6 +710,7 @@ export default function AdminDashboard() {
         setSearchQuery('');
         setServiceFilter('All');
         setFulfillmentFilter('All');
+        setMenuOpen(false);
     };
 
     // Persists to the backend first; local state is only updated from the server's response.
@@ -722,7 +778,7 @@ export default function AdminDashboard() {
 
     if (loadError) {
         return (
-            <div style={{ minHeight: '100vh', background: C.bg, color: C.text, display: 'flex', flexDirection: 'column', gap: '16px', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ minHeight: '100vh', background: C.bg, color: C.text, display: 'flex', flexDirection: 'column', gap: '16px', justifyContent: 'center', alignItems: 'center', padding: '20px', textAlign: 'center' }}>
                 <p style={{ color: C.muted, margin: 0 }}>{loadError}</p>
                 <div style={{ display: 'flex', gap: '12px' }}>
                     <button style={S.goldBtn} onClick={() => { setLoading(true); fetchDashboardData(); }}>Retry</button>
@@ -800,10 +856,10 @@ export default function AdminDashboard() {
         />
     );
 
-    // Filters + search shared by the General Inquiries and Diplomat Inquiries tabs.
+    // Filters + search shared by the inquiry tabs.
     const inquiryToolbar = (
-        <div style={S.toolbar}>
-            <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="toolbar" style={S.toolbar}>
+            <div className="filters" style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
                 <div>
                     <span style={{ color: C.muted, fontSize: '0.9rem', fontWeight: '500', marginRight: '8px' }}>Service:</span>
                     <select value={serviceFilter} onChange={(e) => setServiceFilter(e.target.value)} style={S.select}>
@@ -834,11 +890,14 @@ export default function AdminDashboard() {
         onLockedClick: () => flash('warn', LOCKED_MESSAGE)
     };
 
+    const activeLabel = tabs.find(t => t.key === activeTab)?.label;
+
     return (
         <div style={{ minHeight: '100vh', background: C.bg, color: C.text, fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column' }}>
+            <style>{RESPONSIVE_CSS}</style>
 
             {notice && (
-                <div style={{
+                <div className="toast" style={{
                     position: 'fixed', top: '20px', right: '20px', zIndex: 2000, padding: '12px 18px', borderRadius: '8px', maxWidth: '360px',
                     background: noticeColor[notice.type] || noticeColor.success, color: '#fff', fontSize: '0.9rem', fontWeight: '500',
                     boxShadow: '0 4px 14px rgba(0,0,0,0.4)'
@@ -847,44 +906,100 @@ export default function AdminDashboard() {
                 </div>
             )}
 
+            {compact && menuOpen && (
+                <div onClick={() => setMenuOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(0,0,0,0.5)' }} />
+            )}
+
+            {/* Navbar: one row on wide screens, a dropdown below NAV_BREAKPOINT */}
             <div style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.panel, padding: '18px 30px',
-                borderBottom: `1px solid ${C.border}`, marginBottom: '30px', flexWrap: 'wrap', gap: '15px',
-                position: 'sticky', top: 0, zIndex: 50,
-                transform: navHidden ? 'translateY(-100%)' : 'translateY(0)',
+                position: 'sticky', top: 0, zIndex: 50, background: C.panel,
+                borderBottom: `1px solid ${C.border}`, marginBottom: compact ? '18px' : '30px',
+                transform: navHidden && !menuOpen ? 'translateY(-100%)' : 'translateY(0)',
                 transition: 'transform 0.3s ease'
             }}>
-                <div style={{ display: 'flex', gap: '25px', alignItems: 'center', flexWrap: 'wrap' }}>
-                    {tabs.map(tab => (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'nowrap', padding: compact ? '12px 16px' : '14px 30px' }}>
+
+                    {compact ? (
                         <button
-                            key={tab.key}
-                            onClick={() => handleTabChange(tab.key)}
-                            style={{ background: 'none', border: 'none', color: activeTab === tab.key ? C.gold : C.muted, cursor: 'pointer', fontWeight: '600', fontSize: '0.95rem', padding: 0, display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                            onClick={() => setMenuOpen(o => !o)}
+                            aria-expanded={menuOpen}
+                            style={{ ...S.ghostBtn, ...S.iconBtn, color: C.text, minWidth: 0, flex: 1, justifyContent: 'space-between', maxWidth: '320px' }}
                         >
-                            {tab.label}
-                            {tab.unread > 0 && (
-                                <span style={{ background: '#b91c1c', color: '#fff', borderRadius: '999px', fontSize: '0.7rem', padding: '2px 8px', fontWeight: '700' }}>
-                                    {tab.unread} unread
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                                <Menu size={18} color={C.gold} />
+                                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    {activeLabel}
                                 </span>
-                            )}
+                                {unreadAll > 0 && (
+                                    <span style={{ background: '#b91c1c', color: '#fff', borderRadius: '999px', fontSize: '0.7rem', padding: '2px 8px', fontWeight: '700' }}>{unreadAll}</span>
+                                )}
+                            </span>
+                            <ChevronDown size={18} style={{ transform: menuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }} />
                         </button>
-                    ))}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <div style={{ textAlign: 'right' }}>
-                        <span style={{ color: C.text, fontWeight: '600', fontSize: '0.9rem', display: 'block' }}>Administrator: {username}</span>
-                        <span style={{ color: C.gold, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>FKC Management Portal</span>
+                    ) : (
+                        <div className="no-scrollbar" style={{ display: 'flex', gap: '22px', alignItems: 'center', flex: 1, minWidth: 0, overflowX: 'auto' }}>
+                            {tabs.map(tab => (
+                                <button
+                                    key={tab.key}
+                                    onClick={() => handleTabChange(tab.key)}
+                                    style={{ background: 'none', border: 'none', color: activeTab === tab.key ? C.gold : C.muted, cursor: 'pointer', fontWeight: '600', fontSize: '0.92rem', padding: 0, display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap', flexShrink: 0 }}
+                                >
+                                    {tab.label}
+                                    {tab.unread > 0 && (
+                                        <span title={`${tab.unread} unread`} style={{ background: '#b91c1c', color: '#fff', borderRadius: '999px', fontSize: '0.7rem', padding: '2px 7px', fontWeight: '700' }}>
+                                            {tab.unread}
+                                        </span>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: compact ? '10px' : '18px', flexShrink: 0 }}>
+                        {!compact && (
+                            <div style={{ textAlign: 'right', lineHeight: 1.3, whiteSpace: 'nowrap' }}>
+                                <span style={{ color: C.text, fontWeight: '600', fontSize: '0.85rem', display: 'block' }}>Administrator: {username}</span>
+                                <span style={{ color: C.gold, fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>FKC Management Portal</span>
+                            </div>
+                        )}
+                        <button
+                            onClick={handleLogout}
+                            style={{ padding: '8px 16px', background: '#b91c1c', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', fontSize: '0.85rem' }}
+                        >
+                            Logout
+                        </button>
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        style={{ padding: '8px 16px', background: '#b91c1c', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', fontSize: '0.85rem' }}
-                    >
-                        Logout
-                    </button>
                 </div>
+
+                {compact && menuOpen && (
+                    <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: C.panel, borderBottom: `1px solid ${C.border}`, boxShadow: '0 12px 24px rgba(0,0,0,0.5)', maxHeight: 'calc(100vh - 70px)', overflowY: 'auto' }}>
+                        {tabs.map(tab => (
+                            <button
+                                key={tab.key}
+                                onClick={() => handleTabChange(tab.key)}
+                                style={{
+                                    width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    padding: '14px 18px', background: activeTab === tab.key ? 'rgba(178,144,81,0.12)' : 'transparent',
+                                    color: activeTab === tab.key ? C.gold : C.text, border: 'none',
+                                    borderLeft: `3px solid ${activeTab === tab.key ? C.gold : 'transparent'}`,
+                                    borderBottom: `1px solid ${C.border}`, fontWeight: '600', fontSize: '0.95rem', cursor: 'pointer', textAlign: 'left'
+                                }}
+                            >
+                                {tab.label}
+                                {tab.unread > 0 && (
+                                    <span style={{ background: '#b91c1c', color: '#fff', borderRadius: '999px', fontSize: '0.7rem', padding: '2px 8px', fontWeight: '700' }}>{tab.unread} unread</span>
+                                )}
+                            </button>
+                        ))}
+                        <div style={{ padding: '14px 18px' }}>
+                            <span style={{ color: C.text, fontWeight: '600', fontSize: '0.85rem', display: 'block' }}>Administrator: {username}</span>
+                            <span style={{ color: C.gold, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>FKC Management Portal</span>
+                        </div>
+                    </div>
+                )}
             </div>
 
-            <div style={{ maxWidth: '1300px', width: '100%', boxSizing: 'border-box', flex: 1, margin: '0 auto', padding: '0 20px 90px 20px' }}>
+            <div className="page-pad" style={{ maxWidth: '1300px', width: '100%', boxSizing: 'border-box', flex: 1, margin: '0 auto', padding: '0 20px 90px 20px' }}>
 
                 {showBanner && (
                     <NewArrivalsBanner
@@ -897,7 +1012,7 @@ export default function AdminDashboard() {
 
                 {activeTab === 'contacts' && (
                     <>
-                        <div style={S.statGrid}>
+                        <div className="stat-grid" style={S.statGrid}>
                             <StatCard label="Total Inquiries" value={data.contacts.length} />
                             <StatCard label="Unread" value={unreadContacts} gold={unreadContacts > 0} />
                             <StatCard label="Fulfilled" value={countFulfilled(data.contacts)} />
@@ -917,14 +1032,14 @@ export default function AdminDashboard() {
 
                 {activeTab === 'enrollments' && (
                     <>
-                        <div style={S.statGrid}>
+                        <div className="stat-grid" style={S.statGrid}>
                             <StatCard label="Pending Payments" value={countPayments('Pending')} />
                             <StatCard label="Completed Payments" value={countPayments('Completed')} />
                             <StatCard label="Failed Payments" value={countPayments('Failed')} />
                             <StatCard label="Enrollment Revenue" value={formatKsh(enrollmentRevenue)} gold />
                         </div>
 
-                        <div style={S.toolbar}>
+                        <div className="toolbar" style={S.toolbar}>
                             <h3 style={{ color: C.gold, fontSize: '1.2rem', margin: 0, fontWeight: '600' }}>Student Information</h3>
                             {searchBox}
                         </div>
@@ -938,19 +1053,19 @@ export default function AdminDashboard() {
                                 const fee = parseAmount(item.tuition_fee);
                                 return (
                                     <tr key={item.id} style={S.row}>
-                                        <td style={{ ...S.td, fontWeight: '500' }}>
+                                        <td data-label="Student" style={{ ...S.td, fontWeight: '500' }}>
                                             {item.full_name}
                                             {item.age ? <div style={S.sub}>Age {item.age}</div> : null}
                                         </td>
-                                        <td style={{ ...S.td, color: C.muted }}>
+                                        <td data-label="Contact" style={{ ...S.td, color: C.muted }}>
                                             <div>{item.email || 'No Email'}</div>
                                             <div style={S.sub}>{item.mpesa_phone_number || 'No Phone Number Registered'}</div>
                                         </td>
-                                        <td style={{ ...S.td, color: C.gold }}>
+                                        <td data-label="Course" style={{ ...S.td, color: C.gold }}>
                                             {item.course_title}
                                             <div style={S.sub}>{fee > 0 ? formatKsh(fee) : 'Fee not set'} · {item.payment_method}</div>
                                         </td>
-                                        <td style={S.td}>
+                                        <td data-label="Payment" style={S.td}>
                                             <Badge color={paymentColor(item.payment_status)}>{item.payment_status || 'Pending'}</Badge>
                                         </td>
                                         <DateCell value={item.created_at} />
@@ -963,7 +1078,7 @@ export default function AdminDashboard() {
 
                 {activeTab === 'diplomats' && (
                     <>
-                        <div style={S.statGrid}>
+                        <div className="stat-grid" style={S.statGrid}>
                             <StatCard label="Diplomat Inquiries" value={data.diplomats.length} />
                             <StatCard label="Unread" value={unreadDiplomats} gold={unreadDiplomats > 0} />
                             <StatCard label="Fulfilled" value={countFulfilled(data.diplomats)} />
@@ -983,7 +1098,7 @@ export default function AdminDashboard() {
 
                 {activeTab === 'partners' && (
                     <>
-                        <div style={S.statGrid}>
+                        <div className="stat-grid" style={S.statGrid}>
                             <StatCard label="Partnership Inquiries" value={data.partners.length} />
                             <StatCard label="Unread" value={unreadPartners} gold={unreadPartners > 0} />
                             <StatCard label="Fulfilled" value={countFulfilled(data.partners)} />
@@ -1002,7 +1117,7 @@ export default function AdminDashboard() {
 
                 {activeTab === 'projects' && (
                     <>
-                        <div style={S.statGrid}>
+                        <div className="stat-grid" style={S.statGrid}>
                             <StatCard label="Project Proposals" value={data.projects.length} />
                             <StatCard label="Unread" value={unreadProjects} gold={unreadProjects > 0} />
                             <StatCard label="Fulfilled" value={countFulfilled(data.projects)} />
@@ -1021,7 +1136,7 @@ export default function AdminDashboard() {
 
                 {activeTab === 'traffic' && username === 'dev' && (
                     <>
-                        <div style={S.toolbar}>
+                        <div className="toolbar" style={S.toolbar}>
                             <h3 style={{ color: C.gold, fontSize: '1.2rem', margin: 0, fontWeight: '600' }}>Admin Traffic & Activity Logs</h3>
                             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
                                 <SearchBox
@@ -1040,16 +1155,18 @@ export default function AdminDashboard() {
                         >
                             {filteredLogs.map((log, idx) => (
                                 <tr key={idx} style={S.row}>
-                                    <td style={{ ...S.td, fontWeight: '600', color: C.gold }}>
-                                        <span
-                                            title={log.is_active ? 'Active in the last 3 minutes' : 'Inactive'}
-                                            style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', marginRight: '8px', background: log.is_active ? '#22c55e' : '#475569' }}
-                                        />
-                                        {log.admin__username}
+                                    <td data-label="Admin" style={{ ...S.td, fontWeight: '600', color: C.gold }}>
+                                        <span>
+                                            <span
+                                                title={log.is_active ? 'Active in the last 3 minutes' : 'Inactive'}
+                                                style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', marginRight: '8px', background: log.is_active ? '#22c55e' : '#475569' }}
+                                            />
+                                            {log.admin__username}
+                                        </span>
                                     </td>
-                                    <td style={{ ...S.td, color: C.text }}>{log.action}</td>
-                                    <td style={{ ...S.td, color: C.muted }}>{log.ip_address || '—'}</td>
-                                    <DateCell value={log.timestamp} />
+                                    <td data-label="Action" style={{ ...S.td, color: C.text }}>{log.action}</td>
+                                    <td data-label="IP Address" style={{ ...S.td, color: C.muted }}>{log.ip_address || '—'}</td>
+                                    <DateCell value={log.timestamp} label="Timestamp" />
                                 </tr>
                             ))}
                         </DataTable>
