@@ -4,10 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { Bell, Mail, MailOpen, X } from 'lucide-react';
 import AdminFooter from '../components/AdminFooter';
 
-const API_URL = import.meta.env.VITE_API_URL || "https://fkclegalbackend.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const MIN_PRICE = 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
-const DEFAULT_SERVICES = { contacts: 'General Contact Inquiry', diplomats: 'Diplomatic Inquiry' };
+const DEFAULT_SERVICES = {
+    contacts: 'General Contact Inquiry',
+    diplomats: 'Diplomatic Inquiry',
+    partners: 'Foundation Partnership',
+    projects: 'Community Project'
+};
+const isFoundation = (kind) => kind === 'partners' || kind === 'projects';
 const LOCKED_MESSAGE = 'Mark this request as read in Details before setting its status or price.';
 
 const PLACEHOLDERS = [
@@ -86,7 +92,7 @@ const validatePrice = (raw) => {
 const normalizeInquiry = (kind, c) => ({
     ...c,
     phone: c.number || '',
-    service: c.subject || DEFAULT_SERVICES[kind],
+    service: (kind === 'partners' ? c.partnership_type : kind === 'projects' ? c.project_title : c.subject) || DEFAULT_SERVICES[kind],
     fulfillment_status: c.fulfillment_status || 'Incomplete',
     payment_status: c.payment_status || 'Pending',
     price: formatPrice(c.price),
@@ -183,8 +189,8 @@ function Badge({ color, children }) {
 }
 
 // In-site alert for requests that still need to be marked as read.
-function NewArrivalsBanner({ newCount, unreadContacts, unreadDiplomats, onGo, onDismiss }) {
-    const unreadTotal = unreadContacts + unreadDiplomats;
+function NewArrivalsBanner({ newCount, groups, onGo, onDismiss }) {
+    const unreadTotal = groups.reduce((sum, g) => sum + g.count, 0);
     const olderUnread = unreadTotal - newCount;
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', background: 'rgba(178,144,81,0.12)', border: `1px solid ${C.gold}`, borderRadius: '10px', padding: '14px 18px', marginBottom: '25px' }}>
@@ -200,12 +206,9 @@ function NewArrivalsBanner({ newCount, unreadContacts, unreadDiplomats, onGo, on
                     {newCount > 0 && olderUnread > 0 ? ` ${plural(olderUnread, 'older request')} also unread.` : ''}
                 </div>
             </div>
-            {unreadContacts > 0 && (
-                <button style={S.goldBtn} onClick={() => onGo('contacts')}>General Inquiries ({unreadContacts})</button>
-            )}
-            {unreadDiplomats > 0 && (
-                <button style={S.goldBtn} onClick={() => onGo('diplomats')}>Diplomat Inquiries ({unreadDiplomats})</button>
-            )}
+            {groups.filter(g => g.count > 0).map(g => (
+                <button key={g.key} style={S.goldBtn} onClick={() => onGo(g.key)}>{g.label} ({g.count})</button>
+            ))}
             <button
                 aria-label="Dismiss notification"
                 onClick={onDismiss}
@@ -221,7 +224,9 @@ function NewArrivalsBanner({ newCount, unreadContacts, unreadDiplomats, onGo, on
 function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts, savingKey, onUpdate, onSavePrice, onLockedClick, onOpen }) {
     return (
         <DataTable
-            headers={['Client Name', 'Email / Phone Number', 'Service / Details', 'Status', 'Payment Status', 'Price', '']}
+            headers={isFoundation(kind)
+                ? ['Name', 'Email / Phone Number', kind === 'partners' ? 'Partnership Type' : 'Project', 'Status', '']
+                : ['Client Name', 'Email / Phone Number', 'Service / Details', 'Status', 'Payment Status', 'Price', '']}
             isEmpty={rows.length === 0}
             emptyText={emptyText}
         >
@@ -233,7 +238,9 @@ function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts
                 const isNew = isNewArrival(item, now);
                 const extra = kind === 'diplomats'
                     ? [item.diplomatic_status, item.mission_or_country].filter(Boolean).join(' · ')
-                    : '';
+                    : isFoundation(kind)
+                        ? [item.organization, item.location].filter(Boolean).join(' · ')
+                        : '';
                 // Locked controls ignore the pointer so the wrapper can show the "mark as read" reminder.
                 const lockWrap = {
                     opacity: locked ? 0.45 : 1,
@@ -277,46 +284,50 @@ function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts
                                 </select>
                             </div>
                         </td>
-                        <td style={S.td}>
-                            <div style={lockWrap} onClick={locked ? onLockedClick : undefined} title={locked ? 'Mark as read first' : undefined}>
-                                <select
-                                    value={item.payment_status}
-                                    disabled={rowSaving || locked}
-                                    onChange={(e) => onUpdate(kind, item.id, { payment_status: e.target.value })}
-                                    style={{ ...S.cellSelect, ...lockInner }}
-                                >
-                                    <option value="Pending">Pending</option>
-                                    <option value="Completed">Completed</option>
-                                </select>
-                            </div>
-                        </td>
-                        <td style={S.td}>
-                            <div style={lockWrap} onClick={locked ? onLockedClick : undefined} title={locked ? 'Mark as read first' : undefined}>
-                                {!item.price_set ? (
-                                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center', ...lockInner }}>
-                                        <input
-                                            type="text"
-                                            value={draft}
+                        {!isFoundation(kind) && (
+                            <>
+                                <td style={S.td}>
+                                    <div style={lockWrap} onClick={locked ? onLockedClick : undefined} title={locked ? 'Mark as read first' : undefined}>
+                                        <select
+                                            value={item.payment_status}
                                             disabled={rowSaving || locked}
-                                            onChange={(e) => setDrafts(prev => ({ ...prev, [draftKey]: e.target.value.replace(/\D/g, '') }))}
-                                            style={{ width: '70px', background: C.border, color: '#fff', border: '1px solid #374151', borderRadius: '4px', padding: '6px 8px', fontSize: '0.8rem' }}
-                                            placeholder="1000"
-                                        />
-                                        <button
-                                            onClick={() => onSavePrice(kind, item.id, draft)}
-                                            disabled={rowSaving || locked}
-                                            style={{ background: C.gold, color: C.bg, border: 'none', padding: '6px 10px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer' }}
+                                            onChange={(e) => onUpdate(kind, item.id, { payment_status: e.target.value })}
+                                            style={{ ...S.cellSelect, ...lockInner }}
                                         >
-                                            Set
-                                        </button>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Completed">Completed</option>
+                                        </select>
                                     </div>
-                                ) : (
-                                    <div style={{ background: C.border, color: '#fff', border: '1px solid #374151', padding: '6px 10px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: '600', width: '130px', boxSizing: 'border-box', textAlign: 'center' }}>
-                                        Ksh {item.price}
+                                </td>
+                                <td style={S.td}>
+                                    <div style={lockWrap} onClick={locked ? onLockedClick : undefined} title={locked ? 'Mark as read first' : undefined}>
+                                        {!item.price_set ? (
+                                            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', ...lockInner }}>
+                                                <input
+                                                    type="text"
+                                                    value={draft}
+                                                    disabled={rowSaving || locked}
+                                                    onChange={(e) => setDrafts(prev => ({ ...prev, [draftKey]: e.target.value.replace(/\D/g, '') }))}
+                                                    style={{ width: '70px', background: C.border, color: '#fff', border: '1px solid #374151', borderRadius: '4px', padding: '6px 8px', fontSize: '0.8rem' }}
+                                                    placeholder="1000"
+                                                />
+                                                <button
+                                                    onClick={() => onSavePrice(kind, item.id, draft)}
+                                                    disabled={rowSaving || locked}
+                                                    style={{ background: C.gold, color: C.bg, border: 'none', padding: '6px 10px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer' }}
+                                                >
+                                                    Set
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div style={{ background: C.border, color: '#fff', border: '1px solid #374151', padding: '6px 10px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: '600', width: '130px', boxSizing: 'border-box', textAlign: 'center' }}>
+                                                Ksh {item.price}
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        </td>
+                                </td>
+                            </>
+                        )}
                         <td style={{ ...S.td, textAlign: 'right' }}>
                             <button onClick={() => onOpen(item.id)} style={S.goldBtn}>{openLabel}</button>
                         </td>
@@ -331,6 +342,7 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
     const [closeHover, setCloseHover] = useState(false);
     const [noteDraft, setNoteDraft] = useState('');
     const isDiplomat = kind === 'diplomats';
+    const foundation = isFoundation(kind);
     const locked = !item.is_read;
     const updates = item.updates || [];
     const lastUpdate = updates.length ? updates[updates.length - 1] : null;
@@ -360,7 +372,7 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                     <div>
                         <h3 style={{ margin: 0, color: C.gold, fontSize: '1.2rem' }}>
-                            {isDiplomat ? 'Diplomat Inquiry Details' : 'Client Inquiry Details'}
+                            {{ diplomats: 'Diplomat Inquiry Details', partners: 'Partnership Inquiry Details', projects: 'Community Project Details' }[kind] || 'Client Inquiry Details'}
                         </h3>
                         <div style={{ ...S.sub, marginTop: '4px' }}>Inquiry #{item.id} · {item.name}</div>
                     </div>
@@ -404,16 +416,20 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
 
                 <div style={grid}>
                     {cell('Client Name', item.name)}
-                    {cell('Subject / Service', item.service)}
+                    {cell(kind === 'partners' ? 'Partnership Type' : kind === 'projects' ? 'Project Title' : 'Subject / Service', item.service)}
                     {cell('Email', item.email)}
                     {cell('Phone Number', item.phone)}
                     {isDiplomat && cell('Diplomatic Status', item.diplomatic_status)}
                     {isDiplomat && cell('Mission / Country', item.mission_or_country)}
+                    {foundation && cell('Organization', item.organization)}
+                    {kind === 'projects' && cell('Location', item.location)}
+                    {kind === 'projects' && cell('Who Will Benefit', item.beneficiaries)}
+                    {kind === 'projects' && cell('Estimated Budget', item.budget_estimate)}
                 </div>
 
                 <div style={{ marginBottom: '12px' }}>
                     {cell(
-                        'Message',
+                        kind === 'projects' ? 'Project Description' : 'Message',
                         <span style={{ whiteSpace: 'pre-wrap', display: 'block', maxHeight: '180px', overflowY: 'auto' }}>{item.message}</span>
                     )}
                 </div>
@@ -436,36 +452,40 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
                             <option value="Fulfilled">Fulfilled</option>
                         </select>
                     </div>
-                    <div>
-                        <div style={{ ...S.statLabel, fontSize: '0.75rem' }}>Payment</div>
-                        <select
-                            value={item.payment_status}
-                            disabled={saving || locked}
-                            onChange={(e) => onUpdate(kind, item.id, { payment_status: e.target.value })}
-                            style={{ ...S.select, cursor: locked ? 'not-allowed' : 'pointer' }}
-                        >
-                            <option value="Pending">Pending</option>
-                            <option value="Completed">Completed</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div style={{ ...S.statLabel, fontSize: '0.75rem' }}>Price (Ksh)</div>
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                            <input
-                                type="text"
-                                value={priceDraft}
-                                disabled={locked}
-                                onChange={(e) => onPriceChange(e.target.value.replace(/\D/g, ''))}
-                                style={{ ...S.select, width: '110px', cursor: locked ? 'not-allowed' : 'text' }}
-                            />
-                            <button onClick={() => onSavePrice(kind, item.id, priceDraft)} disabled={saving || locked} style={S.goldBtn}>
-                                {saving ? 'Saving...' : 'Save'}
-                            </button>
-                        </div>
-                        <div style={{ ...S.sub, marginTop: '6px' }}>
-                            {item.price_set ? `Current: ${formatKsh(parseAmount(item.price))}` : 'Price not yet confirmed'}
-                        </div>
-                    </div>
+                    {!foundation && (
+                        <>
+                            <div>
+                                <div style={{ ...S.statLabel, fontSize: '0.75rem' }}>Payment</div>
+                                <select
+                                    value={item.payment_status}
+                                    disabled={saving || locked}
+                                    onChange={(e) => onUpdate(kind, item.id, { payment_status: e.target.value })}
+                                    style={{ ...S.select, cursor: locked ? 'not-allowed' : 'pointer' }}
+                                >
+                                    <option value="Pending">Pending</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div style={{ ...S.statLabel, fontSize: '0.75rem' }}>Price (Ksh)</div>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <input
+                                        type="text"
+                                        value={priceDraft}
+                                        disabled={locked}
+                                        onChange={(e) => onPriceChange(e.target.value.replace(/\D/g, ''))}
+                                        style={{ ...S.select, width: '110px', cursor: locked ? 'not-allowed' : 'text' }}
+                                    />
+                                    <button onClick={() => onSavePrice(kind, item.id, priceDraft)} disabled={saving || locked} style={S.goldBtn}>
+                                        {saving ? 'Saving...' : 'Save'}
+                                    </button>
+                                </div>
+                                <div style={{ ...S.sub, marginTop: '6px' }}>
+                                    {item.price_set ? `Current: ${formatKsh(parseAmount(item.price))}` : 'Price not yet confirmed'}
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* Situation updates: only available once the request has been read */}
@@ -512,7 +532,7 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
 /* ---------- main component ---------- */
 
 export default function AdminDashboard() {
-    const [data, setData] = useState({ enrollments: [], contacts: [], diplomats: [], activity_logs: [] });
+    const [data, setData] = useState({ enrollments: [], contacts: [], diplomats: [], partners: [], projects: [], activity_logs: [] });
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState('');
     const [activeTab, setActiveTab] = useState('contacts');
@@ -550,6 +570,8 @@ export default function AdminDashboard() {
                 enrollments: res.data.enrollments || [],
                 contacts: (res.data.contacts || []).map(c => normalizeInquiry('contacts', c)),
                 diplomats: (res.data.diplomats || []).map(d => normalizeInquiry('diplomats', d)),
+                partners: (res.data.partners || []).map(d => normalizeInquiry('partners', d)),
+                projects: (res.data.projects || []).map(d => normalizeInquiry('projects', d)),
                 activity_logs: res.data.activity_logs || []
             });
             setLoadError('');
@@ -722,22 +744,33 @@ export default function AdminDashboard() {
 
     const unreadContacts = countUnread(data.contacts);
     const unreadDiplomats = countUnread(data.diplomats);
-    const newCount = data.contacts.filter(r => isNewArrival(r, now)).length
-        + data.diplomats.filter(r => isNewArrival(r, now)).length;
-    const bannerSig = `${newCount}:${unreadContacts + unreadDiplomats}`;
-    const showBanner = unreadContacts + unreadDiplomats > 0 && dismissedSig !== bannerSig;
+    const unreadPartners = countUnread(data.partners);
+    const unreadProjects = countUnread(data.projects);
+    const unreadGroups = [
+        { key: 'contacts', label: 'General Inquiries', count: unreadContacts },
+        { key: 'diplomats', label: 'Diplomat Inquiries', count: unreadDiplomats },
+        { key: 'partners', label: 'Foundation Partners', count: unreadPartners },
+        { key: 'projects', label: 'Community Projects', count: unreadProjects }
+    ];
+    const unreadAll = unreadGroups.reduce((sum, g) => sum + g.count, 0);
+    const newCount = ['contacts', 'diplomats', 'partners', 'projects']
+        .reduce((sum, k) => sum + data[k].filter(r => isNewArrival(r, now)).length, 0);
+    const bannerSig = `${newCount}:${unreadAll}`;
+    const showBanner = unreadAll > 0 && dismissedSig !== bannerSig;
 
-    const inquiryRows = activeTab === 'diplomats' ? data.diplomats : data.contacts;
+    const inquiryRows = data[['contacts', 'diplomats', 'partners', 'projects'].includes(activeTab) ? activeTab : 'contacts'];
     const serviceOptions = [...new Set(inquiryRows.map(r => r.service))].sort();
 
     const filterInquiries = (rows) => sortInquiries(rows.filter(item =>
         (serviceFilter === 'All' || item.service === serviceFilter) &&
         (fulfillmentFilter === 'All' || item.fulfillment_status === fulfillmentFilter) &&
-        matches(searchQuery, item.name, item.email, item.phone, item.service, item.diplomatic_status, item.mission_or_country, dateText(item.created_at))
+        matches(searchQuery, item.name, item.email, item.phone, item.service, item.diplomatic_status, item.mission_or_country, item.organization, item.location, dateText(item.created_at))
     ));
 
     const filteredContacts = filterInquiries(data.contacts);
     const filteredDiplomats = filterInquiries(data.diplomats);
+    const filteredPartners = filterInquiries(data.partners);
+    const filteredProjects = filterInquiries(data.projects);
 
     const filteredEnrollments = data.enrollments.filter(item =>
         matches(searchQuery, item.full_name, item.email, item.mpesa_phone_number, item.course_title, dateText(item.created_at))
@@ -753,6 +786,8 @@ export default function AdminDashboard() {
         { key: 'contacts', label: 'General Inquiries', count: data.contacts.length, unread: unreadContacts },
         { key: 'enrollments', label: 'Academy Enrollments', count: data.enrollments.length, unread: 0 },
         { key: 'diplomats', label: 'Diplomat Inquiries', count: data.diplomats.length, unread: unreadDiplomats },
+        { key: 'partners', label: 'Foundation Partners', count: data.partners.length, unread: unreadPartners },
+        { key: 'projects', label: 'Community Projects', count: data.projects.length, unread: unreadProjects },
         ...(username === 'dev' ? [{ key: 'traffic', label: 'Admin Traffic Logs', count: data.activity_logs.length, unread: 0 }] : [])
     ];
 
@@ -854,8 +889,7 @@ export default function AdminDashboard() {
                 {showBanner && (
                     <NewArrivalsBanner
                         newCount={newCount}
-                        unreadContacts={unreadContacts}
-                        unreadDiplomats={unreadDiplomats}
+                        groups={unreadGroups}
                         onGo={handleTabChange}
                         onDismiss={() => setDismissedSig(bannerSig)}
                     />
@@ -942,6 +976,44 @@ export default function AdminDashboard() {
                             emptyText="No diplomat inquiries found matching your criteria."
                             openLabel="Details"
                             onOpen={(id) => setSelected({ kind: 'diplomats', id })}
+                            {...tableProps}
+                        />
+                    </>
+                )}
+
+                {activeTab === 'partners' && (
+                    <>
+                        <div style={S.statGrid}>
+                            <StatCard label="Partnership Inquiries" value={data.partners.length} />
+                            <StatCard label="Unread" value={unreadPartners} gold={unreadPartners > 0} />
+                            <StatCard label="Fulfilled" value={countFulfilled(data.partners)} />
+                        </div>
+                        {inquiryToolbar}
+                        <InquiryTable
+                            kind="partners"
+                            rows={filteredPartners}
+                            emptyText="No partnership inquiries found matching your criteria."
+                            openLabel="Details"
+                            onOpen={(id) => setSelected({ kind: 'partners', id })}
+                            {...tableProps}
+                        />
+                    </>
+                )}
+
+                {activeTab === 'projects' && (
+                    <>
+                        <div style={S.statGrid}>
+                            <StatCard label="Project Proposals" value={data.projects.length} />
+                            <StatCard label="Unread" value={unreadProjects} gold={unreadProjects > 0} />
+                            <StatCard label="Fulfilled" value={countFulfilled(data.projects)} />
+                        </div>
+                        {inquiryToolbar}
+                        <InquiryTable
+                            kind="projects"
+                            rows={filteredProjects}
+                            emptyText="No community project proposals found matching your criteria."
+                            openLabel="Details"
+                            onOpen={(id) => setSelected({ kind: 'projects', id })}
                             {...tableProps}
                         />
                     </>

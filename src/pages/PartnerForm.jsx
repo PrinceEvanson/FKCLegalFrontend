@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Send, CheckCircle2 } from "lucide-react";
 
+const API_URL = (import.meta.env.VITE_API_URL || "https://fkclegalbackend.onrender.com").replace(/\/+$/, "");
+
 export default function PartnerForm() {
     const [formData, setFormData] = useState({
         name: "",
@@ -9,17 +11,38 @@ export default function PartnerForm() {
         reason: ""
     });
     const [submitted, setSubmitted] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
+        setError("");
 
-        const submissionPayload = {
-            type: "Partnership Request",
-            ...formData,
-            timestamp: new Date().toISOString()
+        const payload = {
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            message: formData.reason.trim()
         };
-        console.log("Submitting to Admin Dashboard:", submissionPayload);
-        setSubmitted(true);
+
+        try {
+            const response = await fetch(`${API_URL}/api/foundation/partner/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (response.ok) {
+                setSubmitted(true);
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                const firstError = Object.values(errorData).flat()[0];
+                setError(typeof firstError === "string" ? firstError : "We could not send your request. Please check your details and try again.");
+            }
+        } catch {
+            setError("Could not connect to the server. Please try again shortly.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -89,6 +112,7 @@ export default function PartnerForm() {
                             </label>
                             <textarea
                                 required
+                                minLength={10}
                                 rows={4}
                                 value={formData.reason}
                                 onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
@@ -97,12 +121,15 @@ export default function PartnerForm() {
                             />
                         </div>
 
+                        {error && <p className="text-sm text-red-600 dark:text-red-400 text-center">{error}</p>}
+
                         <button
                             type="submit"
-                            className="w-full py-3.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                            disabled={submitting}
+                            className="w-full py-3.5 rounded-full bg-fkcDarkGold dark:bg-fkcGold text-white dark:text-fkcBlack font-bold text-xs uppercase tracking-wider hover:bg-gray-900 dark:hover:bg-white transition shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                             <Send size={16} />
-                            <span>Submit Partnership Request</span>
+                            <span>{submitting ? "Sending..." : "Submit Partnership Request"}</span>
                         </button>
                     </form>
                 )}
