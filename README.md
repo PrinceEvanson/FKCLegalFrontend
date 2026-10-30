@@ -1,16 +1,35 @@
-# React + Vite
+# FKC Legal - Frontend Portal & Architecture
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+[![React](https://img.shields.io/badge/React-18.x-blue.svg)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-Fast-yellow.svg)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC.svg)](https://tailwindcss.com/)
+[![Vercel](https://img.shields.io/badge/Hosted-Vercel-black.svg)](https://vercel.com/)
 
-Currently, two official plugins are available:
+The client-facing web application and secure administrative management portal for FKC Legal, engineered for high performance, dynamic responsiveness, and seamless integration with cloud-hosted backend services.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+##  Tech Stack & Core Technologies
+* **Framework:** React powered by Vite for rapid bundling and hot module replacement
+* **Styling & Theme:** Tailwind CSS with custom branding (`fkcBlack`, `fkcGold`), Lucide Icons, and dark/light mode support
+* **Mapping & Location:** React-Leaflet / Leaflet.js for interactive global and regional network visualization
+* **HTTP Client:** Axios and Fetch API for asynchronous backend communication
+* **Hosting & Deployment:** Continuously deployed via Vercel
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the Oxlint configuration
+## High-Level Architecture & How It Works
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+The FKC Legal frontend follows a modular component-driven architecture designed to separate public-facing advisory touchpoints from restricted administrative management workflows.
+
+### 1. Dynamic API Communication
+* **Environment-Driven Routing:** Utilizes build-time environment variables (`VITE_API_URL`) to dynamically route API calls to the production Render backend or local development servers.
+* **Service Modules:** Encapsulates API requests for client onboarding, contact submissions, academy registrations, and M-Pesa payment status polling.
+
+### 2. Client Portals & Interactive Workflows
+* **Inquiry & Service Forms:** Structured components capturing client data (General, Diplomat, and Academy Enquiries) with real-time validation and error handling.
+* **Interactive Regional Presence:** Integrates map controllers and custom markers via React-Leaflet to dynamically render and transition across global office locations and collaboration hubs in Africa and beyond.
+
+### 3. Secure Administrative Management Dashboard
+* **Protected Routes:** Restricts access to management views using token-based authentication (JWT via SimpleJWT).
+* **Metrics & Analytics:** Aggregates real-time data feeds from the backend to display service request counts, fulfillment status, and revenue tracking across practice areas.

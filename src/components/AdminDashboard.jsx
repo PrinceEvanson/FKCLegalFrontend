@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { AlertCircle, Bell, CheckCircle2, ChevronDown, Mail, MailOpen, Menu, RefreshCw, X } from 'lucide-react';
+import { AlertCircle, AtSign, Bell, CheckCircle2, ChevronDown, Mail, MailOpen, Menu, MessageCircle, RefreshCw, X } from 'lucide-react';
 import AdminFooter from '../components/AdminFooter';
 
 const API_URL = import.meta.env.VITE_API_URL || "https://fkclegalbackend.onrender.com";
@@ -26,7 +26,7 @@ const PLACEHOLDERS = [
 
 // Tables scroll inside their own box: header stays put, about 7 rows show at a time
 // (fewer on short screens so the table never runs under the fixed footer).
-const ROW_HEIGHT = 88;
+const ROW_HEIGHT = 100;
 const HEADER_HEIGHT = 52;
 const VISIBLE_ROWS = 7;
 const TABLE_MAX_HEIGHT = `max(260px, min(${HEADER_HEIGHT + VISIBLE_ROWS * ROW_HEIGHT}px, calc(100vh - 170px)))`;
@@ -127,6 +127,38 @@ const formatPrice = (v) => {
 const digitsOf = (v) => String(Math.round(parseAmount(v)) || MIN_PRICE);
 const formatKsh = (n) => `Ksh ${Math.round(n).toLocaleString('en-US')}`;
 const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+const DEFAULT_COUNTRY_CODE = '254'; // Kenya
+
+// Turns whatever the client typed (0712 345 678, +254712345678, 712345678, 00254...) into
+// the digits-only international format that wa.me expects. Returns '' if it can't be a real number.
+const toWhatsAppNumber = (raw) => {
+    const text = String(raw ?? '').trim();
+    if (!text) return '';
+    const digits = text.replace(/\D/g, '');
+    let intl = '';
+    if (text.startsWith('+')) intl = digits;
+    else if (digits.startsWith('00')) intl = digits.slice(2);
+    else if (digits.startsWith('0')) intl = DEFAULT_COUNTRY_CODE + digits.slice(1);
+    else if (digits.length <= 9) intl = DEFAULT_COUNTRY_CODE + digits;
+    else intl = digits;
+    return intl.length >= 9 && intl.length <= 15 ? intl : '';
+};
+
+const contactGreeting = (item) =>
+    `Hello ${item.name}, this is FKC Legal regarding your ${item.service || 'inquiry'} request.`;
+
+const whatsappLink = (item) => {
+    const num = toWhatsAppNumber(item.phone);
+    return num ? `https://wa.me/${num}?text=${encodeURIComponent(contactGreeting(item))}` : '';
+};
+
+const emailLink = (item) => {
+    if (!item.email) return '';
+    const subject = `Re: ${item.service || 'Your inquiry'} (Inquiry #${item.id})`;
+    const body = `Dear ${item.name},\n\nThank you for contacting FKC Legal regarding your ${item.service || 'inquiry'} request.\n\n`;
+    return `mailto:${item.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};
 
 const fmtDate = (d) => (d ? new Date(d).toLocaleDateString() : '—');
 const fmtTime = (d) => (d ? new Date(d).toLocaleTimeString() : '');
@@ -276,6 +308,43 @@ function NewArrivalsBanner({ newCount, groups, onGo, onDismiss }) {
     );
 }
 
+// Email + WhatsApp buttons. A button is greyed out when the client left that detail empty or invalid.
+function ContactActions({ item, large = false }) {
+    const wa = whatsappLink(item);
+    const mail = emailLink(item);
+
+    const style = (enabled, bg) => ({
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+        padding: large ? '8px 16px' : '5px 10px', borderRadius: '6px',
+        fontSize: large ? '0.85rem' : '0.75rem', fontWeight: '600', textDecoration: 'none', whiteSpace: 'nowrap',
+        background: enabled ? bg : 'transparent', color: enabled ? '#fff' : C.faint,
+        border: `1px solid ${enabled ? bg : C.border}`,
+        opacity: enabled ? 1 : 0.5, cursor: enabled ? 'pointer' : 'not-allowed'
+    });
+    const iconSize = large ? 16 : 13;
+
+    return (
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: large ? 'flex-start' : 'flex-end' }}>
+            {mail ? (
+                <a href={mail} style={style(true, '#1d4ed8')} title={`Email ${item.email}`}>
+                    <AtSign size={iconSize} /> Email
+                </a>
+            ) : (
+                <span style={style(false)} title="No email provided"><AtSign size={iconSize} /> Email</span>
+            )}
+            {wa ? (
+                <a href={wa} target="_blank" rel="noopener noreferrer" style={style(true, '#16a34a')} title="Chat on WhatsApp">
+                    <MessageCircle size={iconSize} /> WhatsApp
+                </a>
+            ) : (
+                <span style={style(false)} title={item.phone ? 'Phone number looks invalid' : 'No phone number provided'}>
+                    <MessageCircle size={iconSize} /> WhatsApp
+                </span>
+            )}
+        </div>
+    );
+}
+
 // One table for both General Inquiries and Diplomat Inquiries.
 function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts, savingKey, onUpdate, onSavePrice, onLockedClick, onOpen }) {
     return (
@@ -385,7 +454,10 @@ function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts
                             </>
                         )}
                         <td data-label="" style={{ ...S.td, textAlign: 'right' }}>
-                            <button onClick={() => onOpen(item.id)} style={S.goldBtn}>{openLabel}</button>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+                                <button onClick={() => onOpen(item.id)} style={S.goldBtn}>{openLabel}</button>
+                                <ContactActions item={item} />
+                            </div>
                         </td>
                     </tr>
                 );
@@ -482,6 +554,12 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
                     {kind === 'projects' && cell('Location', item.location)}
                     {kind === 'projects' && cell('Who Will Benefit', item.beneficiaries)}
                     {kind === 'projects' && cell('Estimated Budget', item.budget_estimate)}
+                </div>
+
+                {/* Contact the client directly */}
+                <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '12px 14px', marginBottom: '12px' }}>
+                    <div style={{ ...S.statLabel, fontSize: '0.75rem', marginBottom: '10px' }}>Contact Client</div>
+                    <ContactActions item={item} large />
                 </div>
 
                 <div style={{ marginBottom: '12px' }}>
@@ -1066,7 +1144,7 @@ export default function AdminDashboard() {
                             kind="contacts"
                             rows={filteredContacts}
                             emptyText="No inquiries found matching your criteria."
-                            openLabel="Dive"
+                            openLabel="Details"
                             onOpen={(id) => setSelected({ kind: 'contacts', id })}
                             {...tableProps}
                         />
