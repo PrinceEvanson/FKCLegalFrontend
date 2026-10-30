@@ -26,7 +26,7 @@ const PLACEHOLDERS = [
 
 // Tables scroll inside their own box: header stays put, about 7 rows show at a time
 // (fewer on short screens so the table never runs under the fixed footer).
-const ROW_HEIGHT = 100;
+const ROW_HEIGHT = 88;
 const HEADER_HEIGHT = 52;
 const VISIBLE_ROWS = 7;
 const TABLE_MAX_HEIGHT = `max(260px, min(${HEADER_HEIGHT + VISIBLE_ROWS * ROW_HEIGHT}px, calc(100vh - 170px)))`;
@@ -454,10 +454,7 @@ function InquiryTable({ kind, rows, now, emptyText, openLabel, drafts, setDrafts
                             </>
                         )}
                         <td data-label="" style={{ ...S.td, textAlign: 'right' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
-                                <button onClick={() => onOpen(item.id)} style={S.goldBtn}>{openLabel}</button>
-                                <ContactActions item={item} />
-                            </div>
+                            <button onClick={() => onOpen(item.id)} style={S.goldBtn}>{openLabel}</button>
                         </td>
                     </tr>
                 );
