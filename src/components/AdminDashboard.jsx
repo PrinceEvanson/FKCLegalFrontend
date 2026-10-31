@@ -157,7 +157,7 @@ const emailLink = (item) => {
     if (!item.email) return '';
     const subject = `Re: ${item.service || 'Your inquiry'} (Inquiry #${item.id})`;
     const body = `Dear ${item.name},\n\nThank you for contacting FKC Legal regarding your ${item.service || 'inquiry'} request.\n\n`;
-    return `mailto:${item.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(item.email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 };
 
 const fmtDate = (d) => (d ? new Date(d).toLocaleDateString() : '—');
@@ -308,10 +308,13 @@ function NewArrivalsBanner({ newCount, groups, onGo, onDismiss }) {
     );
 }
 
-// Email + WhatsApp buttons. A button is greyed out when the client left that detail empty or invalid.
+// Email + WhatsApp buttons. Both open in a new tab. They are greyed out until the inquiry is marked
+// as read, and also when the client left that detail empty or invalid.
 function ContactActions({ item, large = false }) {
-    const wa = whatsappLink(item);
-    const mail = emailLink(item);
+    const locked = !item.is_read;
+    const wa = locked ? '' : whatsappLink(item);
+    const mail = locked ? '' : emailLink(item);
+    const lockedTitle = 'Mark this request as read first';
 
     const style = (enabled, bg) => ({
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
@@ -326,18 +329,18 @@ function ContactActions({ item, large = false }) {
     return (
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: large ? 'flex-start' : 'flex-end' }}>
             {mail ? (
-                <a href={mail} style={style(true, '#1d4ed8')} title={`Email ${item.email}`}>
+                <a href={mail} target="_blank" rel="noopener noreferrer" style={style(true, '#1d4ed8')} title={`Email ${item.email}`}>
                     <AtSign size={iconSize} /> Email
                 </a>
             ) : (
-                <span style={style(false)} title="No email provided"><AtSign size={iconSize} /> Email</span>
+                <span style={style(false)} title={locked ? lockedTitle : 'No email provided'}><AtSign size={iconSize} /> Email</span>
             )}
             {wa ? (
                 <a href={wa} target="_blank" rel="noopener noreferrer" style={style(true, '#16a34a')} title="Chat on WhatsApp">
                     <MessageCircle size={iconSize} /> WhatsApp
                 </a>
             ) : (
-                <span style={style(false)} title={item.phone ? 'Phone number looks invalid' : 'No phone number provided'}>
+                <span style={style(false)} title={locked ? lockedTitle : item.phone ? 'Phone number looks invalid' : 'No phone number provided'}>
                     <MessageCircle size={iconSize} /> WhatsApp
                 </span>
             )}
@@ -557,6 +560,9 @@ function InquiryModal({ kind, item, priceDraft, onPriceChange, onSavePrice, onUp
                 <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '12px 14px', marginBottom: '12px' }}>
                     <div style={{ ...S.statLabel, fontSize: '0.75rem', marginBottom: '10px' }}>Contact Client</div>
                     <ContactActions item={item} large />
+                    {locked && (
+                        <div style={{ ...S.sub, marginTop: '8px' }}>Mark this request as read to enable the contact buttons.</div>
+                    )}
                 </div>
 
                 <div style={{ marginBottom: '12px' }}>
